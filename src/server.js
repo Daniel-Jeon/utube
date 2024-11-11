@@ -1,9 +1,7 @@
 import express from "express";
+import morgan from "morgan";
 import rootRouter from "./routers/rootRouter";
-
-/*
-    express server 연결하는 곳
-*/
+import videoRouter from "./routers/videoRouter";
 
 // express application을 생성
 const app = express();
@@ -14,6 +12,15 @@ app.set("view engine", "pug");
 // 경로를 프로젝트폴더/src/views로 수정해줘야 함
 app.set("views", process.cwd() + "/src/views");
 
-app.get("/", rootRouter);
+// log 확인을 위해 morgan 사용
+app.use(morgan("dev"));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
+app.use("/", rootRouter);
+app.use("/videos", videoRouter);
 
 export default app;
