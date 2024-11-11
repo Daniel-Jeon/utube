@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "nodemon --exec babel-node src/index.js"
+    "dev": "nodemon --exec babel-node src/init.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
   "homepage": "https://github.com/Daniel-Jeon/project1#readme",
   "dependencies": {
     "express": "^4.21.1",
+    "mongoose": "^8.8.1",
     "pug": "^3.0.3"
   },
   "devDependencies": {

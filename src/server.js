@@ -1,6 +1,9 @@
 import express from "express";
+import rootRouter from "./routers/rootRouter";
 
-const PORT = 4000;
+/*
+    express server 연결하는 곳
+*/
 
 // express application을 생성
 const app = express();
@@ -11,11 +14,6 @@ app.set("view engine", "pug");
 // 경로를 프로젝트폴더/src/views로 수정해줘야 함
 app.set("views", process.cwd() + "/src/views");
 
-const homeRouter = (req, res) => {
-  return res.render("home");
-};
+app.get("/", rootRouter);
 
-app.get("/", homeRouter);
-
-// application이 listening할 수 있게 만들기
-app.listen(PORT, () => console.log(`URL : http://localhost:${PORT}`));
+export default app;
