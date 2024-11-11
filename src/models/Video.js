@@ -2,14 +2,15 @@ import mongoose from "mongoose";
 
 // video의 데이터 타입을 결정
 // 영상제목, 내용, 생성날짜, 해시태그, 메타데이터(조회수, 좋아요)
+// 디테일하게!!
 const videoSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: String,
-  createdAt: Date,
-  hashtags: [{ type: String }],
+  title: { type: String, required: true, trim: true },
+  description: { type: String, required: true, trim: true },
+  createdAt: { type: Date, required: true, default: Date.now },
+  hashtags: [{ type: String, trim: true }],
   meta: {
-    views: Number,
-    rating: Number,
+    views: { type: Number, required: true, default: 0 },
+    rating: { type: Number, required: true, default: 0 },
   },
 });
 

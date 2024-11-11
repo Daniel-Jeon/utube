@@ -4,7 +4,7 @@ block content
     if errorMessage 
         p=errorMessage
     form(method="POST") 
-        input(placeholder="TITLE", name="title", type="text")
-        input(placeholder="DESCRIPTION", name="description", type="text")
+        input(placeholder="TITLE", name="title", type="text", required)
+        input(placeholder="DESCRIPTION", name="description", type="text", required)
         input(placeholder="#", name="hashtags", type="text")
         input(type="submit", value="UPLOAD")
