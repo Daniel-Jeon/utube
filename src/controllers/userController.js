@@ -51,5 +51,66 @@ export const postLogin = async (req, res) => {
       .status(400)
       .render("login", { errorMessage: "비밀번호가 틀립니다." });
   }
+  req.session.loggedIn = true;
+  req.session.user = user;
   return res.redirect("/");
+};
+
+export const startGithubLogin = (req, res) => {
+  const baseUrl = "https://github.com/login/oauth/authorize";
+  const config = {
+    client_id: process.env.GITHUB_CLIENT,
+    allow_signup: false,
+    scope: "user:email",
+    //scope: "read:user user:email",
+  };
+  const params = new URLSearchParams(config).toString();
+  return res.redirect(`${baseUrl}?${params}`);
+};
+
+export const finishGithubLogin = async (req, res) => {
+  const baseUrl = "https://github.com/login/oauth/access_token";
+  const config = {
+    client_id: process.env.GITHUB_CLIENT,
+    client_secret: process.env.CLIENT_SECRET,
+    code: req.query.code,
+  };
+  const params = new URLSearchParams(config).toString();
+  const tokenRequest = await (
+    await fetch(`${baseUrl}?${params}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+  ).json();
+  //console.log("tokenRequest:", tokenRequest);
+  if ("access_token" in tokenRequest) {
+    const { access_token } = tokenRequest;
+    //   const apiAccess = await (
+    //     await fetch("https://api.github.com/user", {
+    //       headers: {
+    //         Authorization: `bearer ${access_token}`,
+    //       },
+    //     })
+    //   ).json();
+    const emailData = await (
+      await fetch("https://api.github.com/user/emails", {
+        headers: {
+          Authorization: `bearer ${access_token}`,
+        },
+      })
+    ).json();
+    const emailObj = emailData.find(
+      (email) => email.primary === true && email.verified === true
+    );
+    if (!emailObj) {
+      return res.redirect("/login");
+    }
+    const existingUser = await User.findOne({ email: emailObj.email });
+
+    return res.end();
+  } else {
+    return res.redirect("/login");
+  }
 };

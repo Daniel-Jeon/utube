@@ -1,7 +1,8 @@
+// .env를 사용해서 보안 유지
+import "dotenv/config";
+// db연결과 express server연결을 파일을 나누어 따로 진행
 import "./db";
 import app from "./server";
-
-// db연결과 express server연결을 파일을 나누어 따로 진행
 
 const PORT = 4000;
 

@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
   nickname: { type: String, required: true, uniqued: true },
 });
 
-// 보안을 위해 비밀번호 해싱화
+// 보안을 위해 bcrypt를 사용하여 비밀번호 해싱화
+// pre는 mongoose 미들웨어
 userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 10);
 });

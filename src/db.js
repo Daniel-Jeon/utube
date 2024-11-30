@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 // mongodb와 nodejs를 연결하기 위해 mongoose를 사용
-mongoose.connect("mongodb://127.0.0.1:27017/project1");
+mongoose.connect(process.env.DB_URL);
 const db = mongoose.connection;
 
 // https://mongoosejs.com/docs/connections.html#connection-events
