@@ -4,8 +4,8 @@ block content
     if errorMessage 
         span=errorMessage
     form(method="POST")
-        input(placeholder="아이디(이메일)", type="email", name="email", required)
-        input(placeholder="PW", type="password", name="password", required)
+        input(placeholder="아이디(이메일)", type="email", name="email", required, autocomplete="username")
+        input(placeholder="PW", type="password", name="password", required, autocomplete="current-password")
         input(type="submit", value="LOGIN")
     
     a(href="/users/github/start") Github

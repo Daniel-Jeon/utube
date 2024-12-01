@@ -61,8 +61,7 @@ export const startGithubLogin = (req, res) => {
   const config = {
     client_id: process.env.GITHUB_CLIENT,
     allow_signup: false,
-    scope: "user:email",
-    //scope: "read:user user:email",
+    scope: "read:user user:email",
   };
   const params = new URLSearchParams(config).toString();
   return res.redirect(`${baseUrl}?${params}`);
@@ -84,16 +83,15 @@ export const finishGithubLogin = async (req, res) => {
       },
     })
   ).json();
-  //console.log("tokenRequest:", tokenRequest);
   if ("access_token" in tokenRequest) {
     const { access_token } = tokenRequest;
-    //   const apiAccess = await (
-    //     await fetch("https://api.github.com/user", {
-    //       headers: {
-    //         Authorization: `bearer ${access_token}`,
-    //       },
-    //     })
-    //   ).json();
+    const userData = await (
+      await fetch("https://api.github.com/user", {
+        headers: {
+          Authorization: `bearer ${access_token}`,
+        },
+      })
+    ).json();
     const emailData = await (
       await fetch("https://api.github.com/user/emails", {
         headers: {
@@ -107,10 +105,25 @@ export const finishGithubLogin = async (req, res) => {
     if (!emailObj) {
       return res.redirect("/login");
     }
-    const existingUser = await User.findOne({ email: emailObj.email });
-
-    return res.end();
+    let user = await User.findOne({ email: emailObj.email });
+    if (!user) {
+      user = await User.create({
+        email: emailObj.email,
+        password: "",
+        nickname: userData.login,
+        socialOnly: true,
+      });
+    }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
   } else {
     return res.redirect("/login");
   }
+};
+
+export const logout = (req, res) => {
+  req.session.destroy();
+  res.clearCookie("connect.sid");
+  return res.redirect("/");
 };
