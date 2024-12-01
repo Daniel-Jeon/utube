@@ -11,7 +11,7 @@ export const postJoin = async (req, res) => {
   // exists에 연산자를 사용할 수 있다는걸 기억하는게 좋음
   const exists = await User.exists({ $or: [{ email }, { nickname }] });
   if (exists) {
-    return res.status(400).render("login", {
+    return res.status(400).render("join", {
       errorMessage: "회원가입된 계정이 존재합니다.",
     });
   }
@@ -53,6 +53,12 @@ export const postLogin = async (req, res) => {
   }
   req.session.loggedIn = true;
   req.session.user = user;
+  return res.redirect("/");
+};
+
+export const logout = (req, res) => {
+  req.session.destroy();
+  res.clearCookie("connect.sid");
   return res.redirect("/");
 };
 
@@ -122,8 +128,54 @@ export const finishGithubLogin = async (req, res) => {
   }
 };
 
-export const logout = (req, res) => {
-  req.session.destroy();
-  res.clearCookie("connect.sid");
+export const startKakaoLogin = (req, res) => {
+  const baseUrl = "https://kauth.kakao.com/oauth/authorize";
+  const config = {
+    client_id: process.env.KAKAO_API_KEY,
+    redirect_uri: process.env.KAKAO_REDIRECT_URI,
+    response_type: "code",
+  };
+  const parameters = new URLSearchParams(config).toString();
+  return res.redirect(`${baseUrl}?${parameters}`);
+};
+
+export const finishKakaoLogin = async (req, res) => {
+  const baseUrl = "https://kauth.kakao.com/oauth/token";
+  const config = {
+    grant_type: "authorization_code",
+    client_id: process.env.KAKAO_API_KEY,
+    redirect_uri: process.env.KAKAO_REDIRECT_URI,
+    code: req.query.code,
+  };
+  const parameters = new URLSearchParams(config).toString();
+  const token = await (
+    await fetch(`${baseUrl}?${parameters}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+      },
+    })
+  ).json();
+  const userData = await (
+    await fetch("https://kapi.kakao.com/v2/user/me", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token.access_token}`,
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+      },
+    })
+  ).json();
+  const userEmail = userData.kakao_account.email;
+  let user = await User.findOne({ email: userEmail });
+  if (!user) {
+    user = await User.create({
+      email: userData.kakao_account.email,
+      password: "",
+      nickname: userData.kakao_account.profile.nickname,
+      socialOnly: true,
+    });
+  }
+  req.session.loggedIn = true;
+  req.session.user = user;
   return res.redirect("/");
 };
