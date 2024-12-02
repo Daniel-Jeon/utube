@@ -1,0 +1,12 @@
+extends ../base
+
+block content
+    div
+        ul 
+            li=user._id
+            li=user.email
+            li=user.nickname
+
+    if (loggedInUser._id)
+    a(href=`/users/edit`) 
+        span Edit Profile >

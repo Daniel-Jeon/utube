@@ -1,0 +1,13 @@
+extends ../base
+
+block content 
+    if errorMessage 
+        span=errorMessage
+    form(method="POST")
+        input(placeholder="이메일", name="email", type="email", value=`${loggedInUser.email}` disabled)
+        input(placeholder="별명", name="nickname", type="text", value=`${loggedInUser.nickname}`, required)
+        input(placeholder="국가", name="nation", type="text", value=`${loggedInUser.nation}`)
+        input(type="submit", value="수정")
+    if !loggedInUser.socialOnly
+        a(href="/users/edit/password") 
+            button 비밀번호변경

@@ -6,7 +6,7 @@ export const getJoin = (req, res) => {
 };
 
 export const postJoin = async (req, res) => {
-  const { email, password, confirmPassword, nickname } = req.body;
+  const { email, password, confirmPassword, nickname, nation } = req.body;
   // 닉네임도 나중에 이벤트로 처리하는게 좋을거 같음
   // exists에 연산자를 사용할 수 있다는걸 기억하는게 좋음
   const exists = await User.exists({ $or: [{ email }, { nickname }] });
@@ -26,6 +26,7 @@ export const postJoin = async (req, res) => {
       email,
       password,
       nickname,
+      nation,
     });
     return res.redirect("/login");
   } catch (error) {
@@ -118,6 +119,7 @@ export const finishGithubLogin = async (req, res) => {
         password: "",
         nickname: userData.login,
         socialOnly: true,
+        nation: "",
       });
     }
     req.session.loggedIn = true;
@@ -172,10 +174,74 @@ export const finishKakaoLogin = async (req, res) => {
       email: userData.kakao_account.email,
       password: "",
       nickname: userData.kakao_account.profile.nickname,
+      nation: "",
       socialOnly: true,
     });
   }
   req.session.loggedIn = true;
   req.session.user = user;
   return res.redirect("/");
+};
+
+export const profile = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  return res.render("users/profile", { user });
+};
+
+export const getEdit = (req, res) => {
+  return res.render("users/edit");
+};
+
+export const postEdit = async (req, res) => {
+  const {
+    session: { user: _id },
+    body: { nickname, nation },
+  } = req;
+  const updateUser = await User.findOneAndUpdate(
+    _id,
+    { nickname, nation },
+    { new: true }
+  );
+  req.session.user = updateUser;
+  return res.redirect("/users/edit");
+};
+
+export const getEditPassword = (req, res) => {
+  return res.render("users/password", { pageTitle: "비밀번호 변경" });
+};
+
+export const postEditPassword = async (req, res) => {
+  const { pageTitle } = "비밀번호 변경";
+  const renderUrl = "users/password";
+  const {
+    body: { currentPassword, changePassword, confirmPassword },
+    session: {
+      user: { _id },
+    },
+  } = req;
+  const user = await User.findById(_id);
+  if (!user) {
+    return res.render(renderUrl, {
+      errorMessage: "유저 정보가 없습니다.",
+      pageTitle,
+    });
+  }
+  const check = await bcrypt.compare(currentPassword, user.password);
+  if (!check) {
+    return res.render(renderUrl, {
+      errorMessage: "기존 비밀번호와 맞지 않습니다.",
+      pageTitle,
+    });
+  }
+  if (changePassword !== confirmPassword) {
+    return res.render(renderUrl, {
+      errorMessage: "변경할 비밀번호가 맞지 않습니다.",
+      pageTitle,
+    });
+  }
+  user.password = changePassword;
+  await user.save();
+  //req.session.user.password = changePassword;
+  return res.redirect("/users/logout");
 };

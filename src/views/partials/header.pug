@@ -11,7 +11,7 @@ header
                     a(href="/login") LOGIN
             else 
                 li 
-                    a(href="") #{loggedInUser.nickname}
+                    a(href=`/users/${loggedInUser._id}`) #{loggedInUser.nickname}
                 li 
                     a(href="/users/logout") LOGOUT
                     
