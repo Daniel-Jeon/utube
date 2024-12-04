@@ -1,9 +1,12 @@
+const multer = require("multer");
+
 // 세션관리
 export const localsMiddleware = (req, res, next) => {
-  console.log("req.session:", req.session);
+  //console.log("req.session:", req.session);
   res.locals.siteName = "PROJECT1";
   res.locals.loggedIn = Boolean(req.session.loggedIn);
-  res.locals.loggedInUser = req.session.user;
+  // 빈객체를 넣어줘야 에러를 일으키지 않음
+  res.locals.loggedInUser = req.session.user || {};
   //console.log(res.locals);
   next();
 };
@@ -34,3 +37,5 @@ export const socialLoginMiddleware = (req, res, next) => {
     next();
   }
 };
+
+export const uploadFiles = multer({ dest: "uploads/" });

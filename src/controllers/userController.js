@@ -184,6 +184,7 @@ export const finishKakaoLogin = async (req, res) => {
 };
 
 export const profile = async (req, res) => {
+  // 내 프로필이라도 모든 유저가 봐야함으로 id를 가져올때 세션이 아닌 파라미터에서 가져옴
   const { id } = req.params;
   const user = await User.findById(id);
   return res.render("users/profile", { user });
@@ -195,12 +196,13 @@ export const getEdit = (req, res) => {
 
 export const postEdit = async (req, res) => {
   const {
-    session: { user: _id },
+    session: { user: _id, avatarUrl },
     body: { nickname, nation },
+    file,
   } = req;
   const updateUser = await User.findOneAndUpdate(
     _id,
-    { nickname, nation },
+    { nickname, nation, avatarUrl: file ? file.path : avatarUrl },
     { new: true }
   );
   req.session.user = updateUser;
@@ -222,26 +224,25 @@ export const postEditPassword = async (req, res) => {
   } = req;
   const user = await User.findById(_id);
   if (!user) {
-    return res.render(renderUrl, {
+    return res.status(404).render(renderUrl, {
       errorMessage: "유저 정보가 없습니다.",
       pageTitle,
     });
   }
   const check = await bcrypt.compare(currentPassword, user.password);
   if (!check) {
-    return res.render(renderUrl, {
+    return res.status(400).render(renderUrl, {
       errorMessage: "기존 비밀번호와 맞지 않습니다.",
       pageTitle,
     });
   }
   if (changePassword !== confirmPassword) {
-    return res.render(renderUrl, {
+    return res.status(400).render(renderUrl, {
       errorMessage: "변경할 비밀번호가 맞지 않습니다.",
       pageTitle,
     });
   }
   user.password = changePassword;
   await user.save();
-  //req.session.user.password = changePassword;
   return res.redirect("/users/logout");
 };

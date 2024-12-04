@@ -10,16 +10,20 @@ export const getUploadVideo = (req, res) => {
 };
 
 export const postUploadVideo = async (req, res) => {
-  const { title, description, hashtags } = req.body;
+  const {
+    body: { title, description, hashtags },
+    session: { user: _id },
+  } = req;
   try {
     await Video.create({
       title,
       description,
       hashtags: hashtags.split(",").map((word) => `#${word}`),
+      owner: _id,
     });
     return res.redirect("/");
   } catch (error) {
-    return res.render("upload", {
+    return res.status(400).render("upload", {
       pageTitle: "UPLOAD",
       errorMessage: error.message,
     });
