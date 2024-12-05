@@ -1,14 +1,8 @@
 extends base
+include mixins/video
 
 block content
     each video in videos
-        p
-            a(href=`/videos/${video.id}`)=video.title
-        ul 
-            li=video.title
-            li=video.description
-            li=video.hashtags
-            li=video.meta.views
-            li=video.meta.rating
+        +video(video)
     else 
         p Sorry. Please Search Video.

@@ -1,4 +1,5 @@
 import User from "../models/User";
+import Video from "../models/Video";
 import bcrypt from "bcrypt";
 
 export const getJoin = (req, res) => {
@@ -186,8 +187,19 @@ export const finishKakaoLogin = async (req, res) => {
 export const profile = async (req, res) => {
   // 내 프로필이라도 모든 유저가 봐야함으로 id를 가져올때 세션이 아닌 파라미터에서 가져옴
   const { id } = req.params;
-  const user = await User.findById(id);
-  return res.render("users/profile", { user });
+  const user = await User.findById(id).populate({
+    path: "videos",
+    options: { sort: { createdAt: -1 } },
+  });
+  if (!user) {
+    return res
+      .status(404)
+      .render("404", { errorMessage: "해당 유저가 없습니다." });
+  }
+  return res.render("users/profile", {
+    pageTitle: user.nickname,
+    user,
+  });
 };
 
 export const getEdit = (req, res) => {

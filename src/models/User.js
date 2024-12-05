@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   avatarUrl: String,
   createdAt: { type: Date, default: Date.now },
   socialOnly: { type: Boolean, default: false },
+  videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
 });
 
 // 보안을 위해 bcrypt를 사용하여 비밀번호 해싱화

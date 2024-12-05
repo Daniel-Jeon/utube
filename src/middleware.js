@@ -38,4 +38,16 @@ export const socialLoginMiddleware = (req, res, next) => {
   }
 };
 
-export const uploadFiles = multer({ dest: "uploads/" });
+export const imageUpload = multer({
+  dest: "uploads/images",
+  limits: {
+    fileSize: 1048576,
+  },
+});
+
+export const videoUpload = multer({
+  dest: "uploads/videos",
+  limits: {
+    fileSize: 10485760,
+  },
+});
