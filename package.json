@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "start": "concurrently \"npm start --prefix client\" \"npm start --prefix server\"",
+    "client": "npm start --prefix client",
+    "server": "npm start --prefix server"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/node": "^7.26.0",
+    "concurrently": "^9.1.0"
+  }
+}
