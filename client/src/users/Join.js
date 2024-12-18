@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { checkPassword } from "../utils/validation";
 
 const Join = () => {
   const navigate = useNavigate();
+  const emailRef = useRef("");
+  const passwordRef = useRef("");
 
   const [joinData, setJoinData] = useState({
     email: "",
@@ -14,14 +17,16 @@ const Join = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setJoinData(
-      (prevState) => ({ ...prevState, [name]: value })
-      //console.log("joinData:", joinData)
-    );
+    setJoinData((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const { password, confirmPassword } = joinData;
+    if (!checkPassword(password, confirmPassword)) {
+      passwordRef.current.focus();
+      return;
+    }
     try {
       const data = await fetch("http://localhost:4000/api/join", {
         method: "POST",
@@ -30,12 +35,15 @@ const Join = () => {
         },
         body: JSON.stringify(joinData),
       });
-      console.log("data:", data);
       const json = await data.json();
-      if (json.message) {
-        alert(json.message);
-        navigate("/");
+      alert(json.message);
+      if (!json.success) {
+        if (json.tagname === "email") {
+          emailRef.current.focus();
+          return;
+        }
       }
+      navigate("/login");
     } catch (error) {
       console.log("Join Erorr:", error);
       alert("회원가입중 오류가 발생하였습니다.");
@@ -50,6 +58,8 @@ const Join = () => {
         name="email"
         value={joinData.email}
         onChange={handleChange}
+        required
+        ref={emailRef}
       />
       <input
         type="password"
@@ -57,6 +67,8 @@ const Join = () => {
         name="password"
         value={joinData.password}
         onChange={handleChange}
+        required
+        ref={passwordRef}
       />
       <input
         type="password"
@@ -64,6 +76,7 @@ const Join = () => {
         name="confirmPassword"
         value={joinData.confirmPassword}
         onChange={handleChange}
+        required
       />
       <input
         type="text"
@@ -71,6 +84,7 @@ const Join = () => {
         name="nickname"
         value={joinData.nickname}
         onChange={handleChange}
+        required
       />
       <input
         type="text"
