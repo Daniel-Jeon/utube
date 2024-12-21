@@ -4,16 +4,18 @@ import Header from "./components/Header";
 import Join from "./users/Join";
 import Home from "./components/Home";
 import Login from "./users/Login";
+import { useState } from "react";
 
 function App() {
+  const [user, setUser] = useState(null);
   return (
     <BrowserRouter>
-      <Header />
+      <Header user={user} />
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/join" element={<Join />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login setUser={setUser} />} />
         </Routes>
       </main>
       <Footer />

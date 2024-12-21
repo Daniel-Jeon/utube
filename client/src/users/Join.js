@@ -45,7 +45,7 @@ const Join = () => {
       }
       navigate("/login");
     } catch (error) {
-      console.log("Join Erorr:", error);
+      console.log("Join Error:", error);
       alert("회원가입중 오류가 발생하였습니다.");
     }
   };
