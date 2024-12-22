@@ -1,5 +1,5 @@
 import User from "../models/User";
-import bcrypt, { compare } from "bcrypt";
+import bcrypt from "bcrypt";
 
 export const postJoin = async (req, res) => {
   const { email, password, confirmPassword, nickname, location } = req.body;
@@ -54,6 +54,7 @@ export const postLogin = async (req, res) => {
     req.session.user = {
       id: existingUser._id,
       email: existingUser.email,
+      nickname: existingUser.nickname,
     };
     return res.status(200).json({
       message: "로그인 성공하였습니다.",
@@ -69,7 +70,24 @@ export const postLogin = async (req, res) => {
   }
 };
 
+export const postLogout = (req, res) => {
+  if (!req.session.user) {
+    return res
+      .status(401)
+      .json({ message: "잘못된 접근입니다.", success: false });
+  }
+  req.session.destroy((error) => {
+    if (error) {
+      return res
+        .status(500)
+        .json({ message: "로그아웃에 실패했습니다.", success: false });
+    }
+    res.clearCookie("connect.sid");
+    return res.status(200).json({ message: "로그아웃합니다.", success: true });
+  });
+};
+
 export const getSession = (req, res) => {
-  console.log("getSession:", req.session);
-  return res.status(200);
+  if (!req.session.user) return res.status(401).json({ success: false });
+  return res.status(200).json({ user: req.session.user, success: true });
 };

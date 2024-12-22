@@ -1,20 +1,28 @@
-import { useEffect, useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 
-const Header = ({ user }) => {
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await (
-        await fetch("http://localhost:4000/api/session")
+const Header = ({ user, setUser }) => {
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      const json = await (
+        await fetch("http://localhost:4000/api/logout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+          credentials: "include",
+        })
       ).json();
-      setLoggedIn(data);
-      console.log(data);
-    };
-    fetchData();
-  }, []);
-
+      alert(json.message);
+      if (!json.success) navigate("/login");
+      setUser(null);
+      navigate("/");
+    } catch (error) {
+      console.log("logout error:", error);
+      alert("로그아웃 중 문제가 발생했습니다.\n", error);
+    }
+  };
   return (
     <header>
       <nav>
@@ -33,7 +41,12 @@ const Header = ({ user }) => {
         ) : (
           <>
             <li>
-              <NavLink to="/logout">LOGOUT</NavLink>
+              <NavLink to="/users/profile">{user.nickname} PROFILE</NavLink>
+            </li>
+            <li>
+              <NavLink to="#" onClick={handleLogout}>
+                LOGOUT
+              </NavLink>
             </li>
           </>
         )}

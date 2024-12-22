@@ -27,12 +27,12 @@ const Login = ({ setUser }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(loginData),
+        credentials: "include",
       });
       const json = await data.json();
       alert(json.message);
       if (!json.success) return;
       setUser(json.user);
-      console.log("LOGIN:", json);
       navigate("/");
     } catch (error) {
       console.log("Login Error:", error);
