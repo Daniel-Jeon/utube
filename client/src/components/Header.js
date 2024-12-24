@@ -4,19 +4,16 @@ import { UserContext } from "../contexts/User";
 
 const Header = () => {
   const { user, setUser } = useContext(UserContext);
+  console.log("Header>user", user);
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      const json = await (
-        await fetch("http://localhost:4000/api/logout", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-          credentials: "include",
-        })
-      ).json();
+      const response = await fetch("http://localhost:4000/api/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      console.log("Header>response", response);
+      const json = await response.json();
       alert(json.message);
       if (!json.success) navigate("/login");
       setUser(null);

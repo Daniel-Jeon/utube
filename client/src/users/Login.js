@@ -9,12 +9,10 @@ const Login = () => {
     email: "",
     password: "",
   });
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setLoginData((prevState) => ({ ...prevState, [name]: value }));
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const { email, password } = loginData;
@@ -41,9 +39,8 @@ const Login = () => {
       alert("로그인중 오류가 발생하였습니다.");
     }
   };
-
   return (
-    <form method="POST" enctype="multipart/form-data" onSubmit={handleSubmit}>
+    <form method="POST" onSubmit={handleSubmit}>
       <input
         placeholder="이메일을 입력하세요."
         type="email"

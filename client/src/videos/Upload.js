@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/User";
-import { checkSession } from "../utils/auth";
 import { useNavigate } from "react-router";
 
 const Upload = () => {
@@ -8,7 +7,11 @@ const Upload = () => {
   const { setUser } = useContext(UserContext);
   useEffect(() => {
     const fetchSession = async () => {
-      const json = await checkSession();
+      const response = await fetch("http://localhost:4000/api/session", {
+        credentials: "include",
+      });
+      const json = await response.json();
+      if (!json.success) return;
       setUser(json);
     };
     fetchSession();
@@ -39,7 +42,6 @@ const Upload = () => {
       alert("업로드한 파일이 없습니다.");
       return;
     }
-    console.log(upload);
     const formData = new FormData();
     formData.append("video", upload.video);
     formData.append("title", upload.title);

@@ -88,9 +88,28 @@ export const postLogout = (req, res) => {
   });
 };
 
-export const getSession = (req, res) => {
-  if (!req.session.user) return res.status(401).json({ success: false });
-  return res.status(200).json({ user: req.session.user, success: true });
+export const getSession = async (req, res) => {
+  if (!req.session.user)
+    return res
+      .status(401)
+      .json({ message: "접근 권한이 없습니다.", success: false });
+  /*
+  console.log("getSession:", req.session.user);
+  const { id } = req.session.user;
+  const userData = await User.findById(id);
+  console.log("userData:", userData);
+  if (!userData) {
+    req.session.destroy((error) => {
+      console.error("세션 삭제 실패", error);
+      return res
+        .status(500)
+        .json({ message: "세션 삭제 실패", success: false });
+    });
+    res.clearCookie("connect-sid");
+    return res.status(401).json({ message: "유저 정보 없음", success: false });
+  }
+*/
+  return res.status(200).json({ success: true, user: req.session.user });
 };
 
 export const postUpload = async (req, res) => {

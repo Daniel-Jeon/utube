@@ -6,14 +6,23 @@ import {
   getSession,
   postUpload,
 } from "../controllers/apiController";
-import { uploadMiddleware } from "../middleware";
+import {
+  privateMiddleware,
+  publicMiddleware,
+  uploadMiddleware,
+} from "../middleware";
 
 const apiRouter = express.Router();
 
-apiRouter.post("/join", postJoin);
-apiRouter.post("/login", postLogin);
-apiRouter.post("/logout", postLogout);
-apiRouter.post("/upload", uploadMiddleware.single("video"), postUpload);
+apiRouter.post("/join", publicMiddleware, postJoin);
+apiRouter.post("/login", publicMiddleware, postLogin);
+apiRouter.post("/logout", privateMiddleware, postLogout);
+apiRouter.post(
+  "/upload",
+  privateMiddleware,
+  uploadMiddleware.single("video"),
+  postUpload
+);
 apiRouter.get("/session", getSession);
 
 export default apiRouter;
