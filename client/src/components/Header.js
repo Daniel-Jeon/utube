@@ -1,6 +1,9 @@
+import { useContext } from "react";
 import { NavLink, useNavigate } from "react-router";
+import { UserContext } from "../contexts/User";
 
-const Header = ({ user, setUser }) => {
+const Header = () => {
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
@@ -47,6 +50,9 @@ const Header = ({ user, setUser }) => {
               <NavLink to="#" onClick={handleLogout}>
                 LOGOUT
               </NavLink>
+            </li>
+            <li>
+              <NavLink to="/video/upload">UPLOAD</NavLink>
             </li>
           </>
         )}

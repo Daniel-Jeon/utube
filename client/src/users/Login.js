@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
+import { UserContext } from "../contexts/User";
 
-const Login = ({ setUser }) => {
+const Login = () => {
+  const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
     email: "",
@@ -41,7 +43,7 @@ const Login = ({ setUser }) => {
   };
 
   return (
-    <form method="POST" onSubmit={handleSubmit}>
+    <form method="POST" enctype="multipart/form-data" onSubmit={handleSubmit}>
       <input
         placeholder="이메일을 입력하세요."
         type="email"

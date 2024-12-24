@@ -1,4 +1,5 @@
 import User from "../models/User";
+import Video from "../models/Video";
 import bcrypt from "bcrypt";
 
 export const postJoin = async (req, res) => {
@@ -90,4 +91,40 @@ export const postLogout = (req, res) => {
 export const getSession = (req, res) => {
   if (!req.session.user) return res.status(401).json({ success: false });
   return res.status(200).json({ user: req.session.user, success: true });
+};
+
+export const postUpload = async (req, res) => {
+  const {
+    file: { filename: video },
+    body: { title, description, hashtags },
+    session,
+  } = req;
+  if (!session || !session.user)
+    return res
+      .status(401)
+      .json({ message: "로그인이 필요합니다.", success: false });
+  if (!req.file)
+    return res
+      .status(400)
+      .json({ message: "업로드한 파일이 없습니다.", success: false });
+  try {
+    const videoData = await Video.create({
+      video,
+      title,
+      description,
+      hashtags: Video.formatHashtags(hashtags),
+      owner: session.user.id,
+    });
+    const userData = await User.findById(session.user.id);
+    userData.videos.push(videoData._id);
+    userData.save();
+    return res
+      .status(201)
+      .json({ message: "성공", success: true, id: videoData._id });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "업로드에 실패했습니다.", success: false });
+  }
 };

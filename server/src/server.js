@@ -1,8 +1,9 @@
+import cors from "cors";
 import express from "express";
 import session from "express-session";
-import cors from "cors";
 import MongoStore from "connect-mongo";
 import apiRouter from "./routers/apiRouter";
+import { localsMiddleware } from "./middleware";
 
 const app = express();
 
@@ -22,12 +23,7 @@ app.use(
     store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1:27017/utube" }),
   })
 );
-app.use((req, res, next) => {
-  res.locals.loggedIn = Boolean(req.session.loggedIn);
-  res.locals.siteName = "U tube";
-  res.locals.user = req.session.user;
-  next();
-});
+app.use(localsMiddleware);
 
 app.use("/api", apiRouter);
 
