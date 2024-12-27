@@ -5,6 +5,7 @@ import {
   postLogout,
   getSession,
   postUpload,
+  getVideos,
 } from "../controllers/apiController";
 import {
   privateMiddleware,
@@ -23,6 +24,7 @@ apiRouter.post(
   uploadMiddleware.single("video"),
   postUpload
 );
+apiRouter.get("/videos", getVideos);
 apiRouter.get("/session", getSession);
 
 export default apiRouter;
