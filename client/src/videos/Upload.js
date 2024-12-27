@@ -1,21 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../contexts/User";
-import { useNavigate } from "react-router";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Upload = () => {
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
-  useEffect(() => {
-    const fetchSession = async () => {
-      const response = await fetch("http://localhost:4000/api/session", {
-        credentials: "include",
-      });
-      const json = await response.json();
-      if (!json.success) return;
-      setUser(json);
-    };
-    fetchSession();
-  }, [setUser]);
   const [upload, setUpload] = useState({
     video: null,
     title: "",
@@ -59,7 +46,7 @@ const Upload = () => {
       navigate(`/video/${json.id}`);
     } catch (error) {
       alert("업로드중 오류가 발생했습니다.\n", error);
-      console.log("handleSubmit:", error);
+      console.error("handleSubmit:", error);
     }
   };
   return (
@@ -70,6 +57,7 @@ const Upload = () => {
           name="video"
           onChange={handleChange}
           accept="video/*"
+          required
         />
         <input
           type="text"
@@ -77,12 +65,14 @@ const Upload = () => {
           name="title"
           value={upload.title}
           onChange={handleChange}
+          required
         />
         <textarea
           placeholder="영상 설명"
           name="description"
           value={upload.description}
           onChange={handleChange}
+          required
         />
         <input
           type="text"

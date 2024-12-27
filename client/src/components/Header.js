@@ -1,10 +1,9 @@
 import { useContext } from "react";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/User";
 
 const Header = () => {
   const { user, setUser } = useContext(UserContext);
-  console.log("Header>user", user);
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
@@ -12,14 +11,13 @@ const Header = () => {
         method: "POST",
         credentials: "include",
       });
-      console.log("Header>response", response);
       const json = await response.json();
       alert(json.message);
       if (!json.success) navigate("/login");
       setUser(null);
       navigate("/");
     } catch (error) {
-      console.log("logout error:", error);
+      console.error("logout error:", error);
       alert("로그아웃 중 문제가 발생했습니다.\n", error);
     }
   };
