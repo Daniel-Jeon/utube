@@ -19,11 +19,14 @@ const VideoList = ({ videos }) => {
         <ul key={video._id}>
           <li>영상</li>
           <li>
-            <Link to={`/video/${video._id}`}>{video.title}</Link>
+            <Link to={`/video/${video._id}`} state={{ video }}>
+              {video.title}
+            </Link>
           </li>
           <li>{video.description}</li>
           <li>{video.hashtags}</li>
           <li>{formateDate(video.createdAt)}</li>
+          <li>{video.owner.nickname}</li>
           <br />
         </ul>
       ))}

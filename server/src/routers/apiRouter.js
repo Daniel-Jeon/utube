@@ -6,6 +6,7 @@ import {
   getSession,
   postUpload,
   getVideos,
+  postVerifyVideoOwnership,
 } from "../controllers/apiController";
 import {
   privateMiddleware,
@@ -24,6 +25,7 @@ apiRouter.post(
   uploadMiddleware.single("video"),
   postUpload
 );
+apiRouter.post("/video/:id([0-9a-f]{24})", postVerifyVideoOwnership);
 apiRouter.get("/videos", getVideos);
 apiRouter.get("/session", getSession);
 

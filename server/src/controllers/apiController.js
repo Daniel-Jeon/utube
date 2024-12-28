@@ -41,7 +41,7 @@ export const postLogin = async (req, res) => {
     if (!existingUser)
       return res
         .status(401)
-        .json({ message: "입력하신 정보가 틀립니다.", success: false });
+        .json({ message: "계정정보가 없습니다.", success: false });
     const comparePassword = await bcrypt.compare(
       password,
       existingUser.password
@@ -90,16 +90,21 @@ export const postLogout = (req, res) => {
 
 export const getSession = async (req, res) => {
   const { user } = req.session;
+  /*
   if (!user)
     return res
       .status(401)
       .json({ message: "접근 권한이 없습니다.", success: false });
   return res.status(200).json({ success: true, user });
+  */
+  return !user
+    ? res.status(401).json({ message: "접근 권한이 없습니다.", success: false })
+    : res.status(200).json({ user, success: true });
 };
 
 export const postUpload = async (req, res) => {
   const {
-    file: { filename: video },
+    file: { path: filepath },
     body: { title, description, hashtags },
     session,
   } = req;
@@ -113,7 +118,7 @@ export const postUpload = async (req, res) => {
       .json({ message: "업로드한 파일이 없습니다.", success: false });
   try {
     const videoData = await Video.create({
-      video,
+      filepath,
       title,
       description,
       hashtags: Video.formatHashtags(hashtags),
@@ -134,7 +139,26 @@ export const postUpload = async (req, res) => {
 };
 
 export const getVideos = async (req, res) => {
-  const videos = await Video.find({}).sort({ createdAt: "desc" });
+  const videos = await Video.find({})
+    .sort({ createdAt: "desc" })
+    .populate("owner", "-password -createdAt");
   if (!videos) return res.status(204).json();
   return res.status(200).json({ message: "굿", success: true, videos });
 };
+
+export const postVerifyVideoOwnership = async (req, res) => {
+  const {
+    body: userData,
+    params: { id: videoId },
+  } = req;
+  try {
+    const videoData = await Video.findById(videoId);
+    if (!(String(videoData.owner) === String(userData.id)))
+      return res.status(403).end();
+    return res.status(200).end();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).end();
+  }
+};
+

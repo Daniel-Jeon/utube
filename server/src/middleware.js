@@ -1,4 +1,5 @@
 import multer from "multer";
+import path from "path";
 
 export const localsMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn);
@@ -25,4 +26,16 @@ export const publicMiddleware = (req, res, next) => {
   next();
 };
 
-export const uploadMiddleware = multer({ dest: "uploads/" });
+export const uploadMiddleware = multer({
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "uploads/videos");
+    },
+    filename: function (req, file, cb) {
+      cb(
+        null,
+        req.session.user.id + "_" + Date.now + path.extname(file.originalname)
+      );
+    },
+  }),
+});

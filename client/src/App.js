@@ -7,6 +7,7 @@ import Join from "./users/Join";
 import Login from "./users/Login";
 import Upload from "./videos/Upload";
 import { UserContext } from "./contexts/User";
+import Video from "./videos/Video";
 
 const App = () => {
   const { user, loading } = useContext(UserContext);
@@ -27,14 +28,9 @@ const App = () => {
           />
           <Route
             path="/video/upload"
-            element={
-              user === null ? null : user ? (
-                <Upload />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
+            element={user ? <Upload /> : <Navigate to="/login" replace />}
           />
+          <Route path="/video/:id" element={<Video />} />
         </Routes>
       </main>
       <Footer />

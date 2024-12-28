@@ -15,6 +15,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static("uploads"));
 app.use(
   session({
     secret: "what you gonna do?",
@@ -22,7 +23,7 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1:27017/utube" }),
     cookie: {
-      maxAge: 1000 * 60 * 10,
+      maxAge: 1000 * 60 * 30,
     },
   })
 );
