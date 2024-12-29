@@ -90,13 +90,6 @@ export const postLogout = (req, res) => {
 
 export const getSession = async (req, res) => {
   const { user } = req.session;
-  /*
-  if (!user)
-    return res
-      .status(401)
-      .json({ message: "접근 권한이 없습니다.", success: false });
-  return res.status(200).json({ success: true, user });
-  */
   return !user
     ? res.status(401).json({ message: "접근 권한이 없습니다.", success: false })
     : res.status(200).json({ user, success: true });
@@ -124,12 +117,13 @@ export const postUpload = async (req, res) => {
       hashtags: Video.formatHashtags(hashtags),
       owner: session.user.id,
     });
+    //console.log(typeof videoData._id);
     const userData = await User.findById(session.user.id);
     userData.videos.push(videoData._id);
     userData.save();
     return res
       .status(201)
-      .json({ message: "성공", success: true, id: videoData._id });
+      .json({ message: "성공", success: true, video: videoData });
   } catch (error) {
     console.log(error);
     return res
@@ -146,7 +140,7 @@ export const getVideos = async (req, res) => {
   return res.status(200).json({ message: "굿", success: true, videos });
 };
 
-export const postVerifyVideoOwnership = async (req, res) => {
+export const postConfirmOwner = async (req, res) => {
   const {
     body: userData,
     params: { id: videoId },
@@ -154,11 +148,24 @@ export const postVerifyVideoOwnership = async (req, res) => {
   try {
     const videoData = await Video.findById(videoId);
     if (!(String(videoData.owner) === String(userData.id)))
-      return res.status(403).end();
-    return res.status(200).end();
+      return res.status(403).json({ success: false });
+    return res.status(200).json({ success: true, videoData });
   } catch (error) {
     console.error(error);
     return res.status(500).end();
   }
+};
+
+export const getVideoData = async (req, res) => {
+  const { id } = req.params;
+  const videoData = await Video.findById(id).populate(
+    "owner",
+    "-password -createdAt"
+  );
+  if (!videoData)
+    return res
+      .status(404)
+      .json({ message: "영상이 존재하지 않습니다.", success: false });
+  return res.status(200).json({ success: true, videoData });
 };
 

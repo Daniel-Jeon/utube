@@ -41,9 +41,10 @@ const Upload = () => {
         credentials: "include",
       });
       const json = await response.json();
+      console.log(json);
       alert(json.message);
       if (!json.success) return;
-      navigate(`/video/${json.id}`);
+      navigate("/video/" + json.video._id, { state: { video: json.video } });
     } catch (error) {
       alert("업로드중 오류가 발생했습니다.\n", error);
       console.error("handleSubmit:", error);
@@ -88,3 +89,6 @@ const Upload = () => {
 };
 
 export default Upload;
+
+// http://localhost:3000/video/6770d4377122db6343737cf6
+// http://localhost:3000/video/6770d4377122db6343737cf6

@@ -1,16 +1,37 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../contexts/User";
 
 const Video = () => {
   const { user } = useContext(UserContext);
-  const [owner, setOwner] = useState(false);
+  const navigate = useNavigate();
+  console.log(navigate);
   const { id } = useParams();
-  const location = useLocation();
-  const videoData = location.state?.video;
+  const [owner, setOwner] = useState(false);
+  const [videoData, setVideoData] = useState(
+    useLocation().state?.video || null
+  );
   useEffect(() => {
-    const fetchVerifyVideoOwnership = async () => {
-      if (user === null) return;
+    const fetchVideoData = async () => {
+      const response = await fetch(`http://localhost:4000/api/video/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await response.json();
+      if (!json.success) {
+        setVideoData(null);
+        alert(`${response.status} ${response.statusText}\n${json.message}`);
+        navigate("/");
+        return;
+      }
+      setVideoData(json.videoData);
+    };
+    fetchVideoData();
+  }, [id, navigate]);
+  useEffect(() => {
+    if (!user) return;
+    const fetchConfirmOwner = async () => {
       const response = await fetch(`http://localhost:4000/api/video/${id}`, {
         method: "POST",
         headers: {
@@ -19,9 +40,10 @@ const Video = () => {
         body: JSON.stringify(user),
         credentials: "include",
       });
-      if (response.ok) setOwner(true);
+      const json = await response.json();
+      if (json.success) setOwner(true);
     };
-    fetchVerifyVideoOwnership();
+    fetchConfirmOwner();
   }, [id, user]);
   return (
     <>
@@ -33,6 +55,9 @@ const Video = () => {
               src={"http://localhost:4000/" + videoData.filepath}
             ></source>
           </video>
+          <h3>{videoData.description}</h3>
+          <p>게시자 : {videoData.owner.nickname}</p>
+          <p>{videoData.hashtags}</p>
           {owner && (
             <>
               <p>

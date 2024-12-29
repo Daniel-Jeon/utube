@@ -34,7 +34,7 @@ export const uploadMiddleware = multer({
     filename: function (req, file, cb) {
       cb(
         null,
-        req.session.user.id + "_" + Date.now + path.extname(file.originalname)
+        req.session.user.id + "_" + Date.now() + path.extname(file.originalname)
       );
     },
   }),
