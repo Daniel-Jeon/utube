@@ -22,9 +22,6 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1:27017/utube" }),
-    cookie: {
-      maxAge: 1000 * 60 * 30,
-    },
   })
 );
 app.use(localsMiddleware);

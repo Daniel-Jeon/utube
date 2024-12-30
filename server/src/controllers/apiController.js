@@ -169,3 +169,72 @@ export const getVideoData = async (req, res) => {
   return res.status(200).json({ success: true, videoData });
 };
 
+export const deleteVideo = async (req, res) => {
+  const { id: userId } = req.session.user;
+  const { id: videoId } = req.params;
+  try {
+    const confirmOwner = await Video.findById(videoId);
+    if (!confirmOwner)
+      return res
+        .status(404)
+        .json({ message: "영상이 존재하지 않습니다.", success: false });
+    if (String(confirmOwner.owner) !== String(userId))
+      return res
+        .status(403)
+        .json({ message: "권한이 없습니다.", success: false });
+    await Video.deleteOne({ _id: videoId });
+    return res
+      .status(200)
+      .json({ message: "영상이 삭제되었습니다.", success: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "삭제 중 에러 발생\n잠시후 다시 시도하세요.",
+      success: false,
+    });
+  }
+};
+
+export const postEditVideo = async (req, res) => {
+  const { _id: videoId, title, description, hashtags } = req.body;
+  const { id: userId } = req.session.user;
+  console.log(typeof hashtags);
+  if (String(videoId) !== String(req.params.id))
+    return res.status(403).json({
+      message: "영상 정보가 맞지 않습니다.\n홈으로 이동합니다.",
+      success: false,
+    });
+  try {
+    const videoData = await Video.findById(videoId);
+    if (!videoData)
+      return res
+        .status(404)
+        .json({ message: "영상이 존재하지 않습니다.", success: false });
+    if (String(userId) !== String(videoData.owner))
+      return res.status(403).json({
+        message: "영상 정보가 맞지 않습니다.\n홈으로 이동합니다.",
+        success: false,
+      });
+    await Video.updateOne(
+      { _id: videoId },
+      {
+        $set: {
+          title,
+          description,
+          hashtags: Video.formatHashtags(hashtags),
+        },
+      },
+      { new: true }
+    );
+    return res.status(200).json({
+      message: "영상정보가 수정되었습니다.",
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "업데이트 도중 오류가 발생하였습니다.\n잠시 후 다시 시도하세요.",
+      success: false,
+    });
+  }
+};

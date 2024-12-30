@@ -8,7 +8,8 @@ import {
   getVideos,
   getVideoData,
   postConfirmOwner,
-  postDeleteVideo,
+  deleteVideo,
+  postEditVideo,
 } from "../controllers/apiController";
 import {
   privateMiddleware,
@@ -29,7 +30,8 @@ apiRouter.post(
 );
 apiRouter.get("/video/:id([0-9a-f]{24})", getVideoData);
 apiRouter.post("/video/:id([0-9a-f]{24})", postConfirmOwner);
-apiRouter.delete("/video/:id([0-9a-f]{24})/delete", postDeleteVideo);
+apiRouter.delete("/video/:id([0-9a-f]{24})/delete", deleteVideo);
+apiRouter.post("/video/:id([0-9a-f]{24})/edit", postEditVideo);
 apiRouter.get("/videos", getVideos);
 apiRouter.get("/session", getSession);
 

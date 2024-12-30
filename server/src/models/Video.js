@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import User from "./User";
 
 const videoSchema = new mongoose.Schema({
   filepath: { type: String, required: true, trim: true },
@@ -10,9 +11,20 @@ const videoSchema = new mongoose.Schema({
 });
 
 videoSchema.static("formatHashtags", function (hashtags) {
-  return hashtags
+  return String(hashtags)
     .split(",")
     .map((word) => (word.startsWith("#") ? word : `#${word}`));
+});
+
+videoSchema.pre("deleteOne", async function (next) {
+  const video = await this.model.findOne(this.getQuery());
+  if (video) {
+    await User.updateOne(
+      { _id: video.owner },
+      { $pull: { videos: video._id } }
+    );
+  }
+  next();
 });
 
 const Video = mongoose.model("Video", videoSchema);

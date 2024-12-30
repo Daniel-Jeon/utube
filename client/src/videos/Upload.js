@@ -89,6 +89,3 @@ const Upload = () => {
 };
 
 export default Upload;
-
-// http://localhost:3000/video/6770d4377122db6343737cf6
-// http://localhost:3000/video/6770d4377122db6343737cf6

@@ -5,12 +5,10 @@ import { UserContext } from "../contexts/User";
 const Video = () => {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
-  console.log(navigate);
   const { id } = useParams();
+  const location = useLocation();
   const [owner, setOwner] = useState(false);
-  const [videoData, setVideoData] = useState(
-    useLocation().state?.video || null
-  );
+  const [videoData, setVideoData] = useState(location.state?.video || null);
   useEffect(() => {
     const fetchVideoData = async () => {
       const response = await fetch(`http://localhost:4000/api/video/${id}`, {
@@ -30,7 +28,7 @@ const Video = () => {
     fetchVideoData();
   }, [id, navigate]);
   useEffect(() => {
-    if (!user) return;
+    if (!user || !videoData || !id) return;
     const fetchConfirmOwner = async () => {
       const response = await fetch(`http://localhost:4000/api/video/${id}`, {
         method: "POST",
@@ -44,7 +42,29 @@ const Video = () => {
       if (json.success) setOwner(true);
     };
     fetchConfirmOwner();
-  }, [id, user]);
+  }, [id, user, videoData]);
+  const handleDeleteVideo = async (event) => {
+    event.preventDefault();
+    // 홈에서 가져온 영상 정보의 소유주와 전역 상태 관리중인 유저 정보를 비교
+    if (String(videoData.owner._id) !== String(user.id)) {
+      alert("권한없음");
+      return;
+    }
+    const response = await fetch(
+      `http://localhost:4000/api/video/${id}/delete`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    const json = await response.json();
+    alert(json.message);
+    if (response.status === 500) return;
+    navigate("/");
+  };
   return (
     <>
       {videoData && (
@@ -61,10 +81,12 @@ const Video = () => {
           {owner && (
             <>
               <p>
-                <Link to="#">수정</Link>
+                <Link to={location.pathname + "/edit"} state={videoData}>
+                  수정
+                </Link>
               </p>
               <p>
-                <Link to="#">삭제</Link>
+                <Link onClick={handleDeleteVideo}>삭제</Link>
               </p>
             </>
           )}
