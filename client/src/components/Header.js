@@ -23,34 +23,38 @@ const Header = () => {
   };
   return (
     <header>
-      <nav>
-        <li>
-          <NavLink to="/">HOME</NavLink>
-        </li>
-        {!user ? (
-          <>
-            <li>
-              <NavLink to="/join">JOIN</NavLink>
-            </li>
-            <li>
-              <NavLink to="/login">LOGIN</NavLink>
-            </li>
-          </>
-        ) : (
-          <>
-            <li>
-              <NavLink to="/users/profile">{user.nickname} PROFILE</NavLink>
-            </li>
-            <li>
-              <NavLink to="#" onClick={handleLogout}>
-                LOGOUT
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/video/upload">UPLOAD</NavLink>
-            </li>
-          </>
-        )}
+      <nav className="bg-gray-800 text-white p-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <li>
+            <NavLink to="/">HOME</NavLink>
+          </li>
+          {!user ? (
+            <>
+              <li>
+                <NavLink to="/join">JOIN</NavLink>
+              </li>
+              <li>
+                <NavLink to="/login">LOGIN</NavLink>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <NavLink to={`/user/${user.id}`}>
+                  {user.nickname} PROFILE
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="#" onClick={handleLogout}>
+                  LOGOUT
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/video/upload">UPLOAD</NavLink>
+              </li>
+            </>
+          )}
+        </div>
       </nav>
     </header>
   );

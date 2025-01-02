@@ -8,7 +8,9 @@ import Login from "./users/Login";
 import Upload from "./videos/Upload";
 import { UserContext } from "./contexts/User";
 import Video from "./videos/Video";
-import Edit from "./videos/Edit";
+import EditVideo from "./videos/EditVideo";
+import Profile from "./users/Profile";
+import EditUser from "./users/EditUser";
 
 const App = () => {
   const { user } = useContext(UserContext);
@@ -20,9 +22,13 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/join" element={!user && <Join />} />
           <Route path="/login" element={!user && <Login />} />
+
+          <Route path="/user/:id" element={<Profile />} />
+          <Route path="/user/:id/edit" element={<EditUser />} />
+
           <Route path="/video/:id" element={<Video />} />
           <Route path="/video/upload" element={user && <Upload />} />
-          <Route path="/video/:id/edit" element={user && <Edit />} />
+          <Route path="/video/:id/edit" element={user && <EditVideo />} />
         </Routes>
       </main>
       <Footer />

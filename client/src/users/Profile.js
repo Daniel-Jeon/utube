@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { UserContext } from "../contexts/User";
 
 const VideoList = ({ videos }) => {
   const formateDate = (createdAt) => {
@@ -28,8 +29,12 @@ const VideoList = ({ videos }) => {
             <li>{formateDate(video.createdAt)}</li>
             <div className="flex">
               <img
-                src={video.owner.avatar ? video.owner.avatar : "/default.webp"} // 기본 이미지 제공
-                alt={`${video.nickname}의 아바타`}
+                src={
+                  video.owner.avatar
+                    ? `../${video.owner.avatar}`
+                    : "/default.webp"
+                }
+                alt=""
                 className="w-16 h-16 rounded-full border border-gray-300 mr-4"
               />
               <p className="self-end">{video.owner.nickname}</p>
@@ -42,30 +47,45 @@ const VideoList = ({ videos }) => {
   );
 };
 
-const Home = () => {
-  const [videos, setVideos] = useState([]);
+const Profile = () => {
+  const { user } = useContext(UserContext);
+  const params = useParams().id;
+  const [profileData, setProfileData] = useState([]);
+  const [videos, setVideos] = useState({});
   useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/api/videos", {
+    const fetchUserVideos = async () => {
+      const response = await fetch(
+        `http://localhost:4000/api/user/${params}/videos`,
+        {
           headers: {
             "Content-Type": "application/json",
           },
-        });
-        const json = await response.json();
-        if (!json.success) return;
-        setVideos(json.videos);
-      } catch (error) {
-        console.error("fetchVideo:", error);
-        setVideos([]);
-      }
+          credentials: "include",
+        }
+      );
+      const json = await response.json();
+      setProfileData(json.user);
+      setVideos(json.videos);
     };
-    fetchVideos();
-  }, []);
-  console.log(videos);
+    fetchUserVideos();
+  }, [params]);
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">HOME</h1>
+      <div className="flex justify-between">
+        <h1 className="text-3xl font-bold mb-6">
+          <img
+            src={`../${profileData.avatar}`}
+            alt=""
+            className="w-20 h-20 rounded-full border border-gray-300 mr-4"
+          />
+          {profileData.nickname} 프로필
+        </h1>
+        {user && user.id === profileData._id && (
+          <h1>
+            <Link to={`/user/${params}/edit`}>프로필 수정</Link>
+          </h1>
+        )}
+      </div>
       <div className="grid grid-cols-4 gap-4">
         {videos.length > 0 ? (
           <VideoList videos={videos} />
@@ -77,4 +97,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Profile;

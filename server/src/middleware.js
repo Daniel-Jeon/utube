@@ -26,10 +26,24 @@ export const publicMiddleware = (req, res, next) => {
   next();
 };
 
-export const uploadMiddleware = multer({
+export const uploadVideoMiddleware = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "uploads/videos");
+    },
+    filename: function (req, file, cb) {
+      cb(
+        null,
+        req.session.user.id + "_" + Date.now() + path.extname(file.originalname)
+      );
+    },
+  }),
+});
+
+export const uploadImageMiddleware = multer({
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "uploads/images");
     },
     filename: function (req, file, cb) {
       cb(

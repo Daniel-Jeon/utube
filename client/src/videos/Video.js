@@ -68,29 +68,49 @@ const Video = () => {
   return (
     <>
       {videoData && (
-        <>
-          <h1>{videoData.title}</h1>
-          <video controls width="80%">
-            <source
-              src={"http://localhost:4000/" + videoData.filepath}
-            ></source>
-          </video>
-          <h3>{videoData.description}</h3>
-          <p>게시자 : {videoData.owner.nickname}</p>
-          <p>{videoData.hashtags}</p>
+        <div className="w-full bg-white shadow-md rounded-lg p-6">
+          <div className="flex justify-center mb-4">
+            <video
+              className="rounded-md border border-gray-300"
+              controls
+              width="50%"
+            >
+              <source
+                src={"http://localhost:4000/" + videoData.filepath}
+              ></source>
+            </video>
+          </div>
+          <h1 className="text-2xl font-bold mb-4">{videoData.title}</h1>
+          <p className="text-gray-700 mb-4">{videoData.description}</p>
+          <p className="text-blue-500 text-sm mb-4">{videoData.hashtags}</p>
+          <div className="flex">
+            <img
+              src={`../${videoData.owner.avatar}`}
+              alt=""
+              className="w-20 h-20 rounded-full border border-gray-300 mr-4"
+            />
+            <p className="text-gray-600 text-sm mb-4 self-end">
+              {videoData.owner.nickname}
+            </p>
+          </div>
           {owner && (
-            <>
-              <p>
-                <Link to={location.pathname + "/edit"} state={videoData}>
-                  수정
-                </Link>
-              </p>
-              <p>
-                <Link onClick={handleDeleteVideo}>삭제</Link>
-              </p>
-            </>
+            <div className="flex justify-between mt-4">
+              <Link
+                to={location.pathname + "/edit"}
+                state={videoData}
+                className="bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-600"
+              >
+                수정
+              </Link>
+              <button
+                onClick={handleDeleteVideo}
+                className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600"
+              >
+                삭제
+              </button>
+            </div>
           )}
-        </>
+        </div>
       )}
     </>
   );

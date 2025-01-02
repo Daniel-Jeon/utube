@@ -50,15 +50,18 @@ const Upload = () => {
       console.error("handleSubmit:", error);
     }
   };
+  console.log(upload);
   return (
-    <>
-      <form method="POST" onSubmit={handleSubmit}>
+    <div className="p-8 w-full max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">영상 업로드</h1>
+      <form method="POST" onSubmit={handleSubmit} className="space-y-6">
         <input
           type="file"
           name="video"
           onChange={handleChange}
           accept="video/*"
           required
+          className="block w-full border border-gray-300 rounded-lg p-3"
         />
         <input
           type="text"
@@ -67,6 +70,7 @@ const Upload = () => {
           value={upload.title}
           onChange={handleChange}
           required
+          className="block w-full h-12 border border-gray-300 rounded-lg p-3"
         />
         <textarea
           placeholder="영상 설명"
@@ -74,17 +78,21 @@ const Upload = () => {
           value={upload.description}
           onChange={handleChange}
           required
-        />
+          className="block w-full h-32 border border-gray-300 rounded-lg p-3 resize-none"
+        ></textarea>
         <input
           type="text"
           placeholder="#해시태그 ,를 사용하여 구분"
           name="hashtags"
           value={upload.hashtags}
           onChange={handleChange}
+          className="block w-full h-12 border border-gray-300 rounded-lg p-3"
         />
-        <button>업로드</button>
+        <button className="w-full bg-blue-500 font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300">
+          업로드
+        </button>
       </form>
-    </>
+    </div>
   );
 };
 

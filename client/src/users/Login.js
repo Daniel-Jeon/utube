@@ -40,23 +40,30 @@ const Login = () => {
     }
   };
   return (
-    <form method="POST" onSubmit={handleSubmit}>
-      <input
-        placeholder="이메일을 입력하세요."
-        type="email"
-        name="email"
-        value={loginData.email}
-        onChange={handleChange}
-      />
-      <input
-        placeholder="비밀번호를 입력하세요."
-        type="password"
-        name="password"
-        value={loginData.password}
-        onChange={handleChange}
-      />
-      <button>로그인</button>
-    </form>
+    <div className="p-8 w-full max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">로그인</h1>
+      <form method="POST" onSubmit={handleSubmit} className="space-y-6">
+        <input
+          placeholder="이메일을 입력하세요."
+          type="email"
+          name="email"
+          value={loginData.email}
+          onChange={handleChange}
+          className="block w-full h-12 border border-gray-300 rounded-lg p-3"
+        />
+        <input
+          placeholder="비밀번호를 입력하세요."
+          type="password"
+          name="password"
+          value={loginData.password}
+          onChange={handleChange}
+          className="block w-full h-12 border border-gray-300 rounded-lg p-3"
+        />
+        <button className="w-full bg-blue-500 font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300">
+          로그인
+        </button>
+      </form>
+    </div>
   );
 };
 

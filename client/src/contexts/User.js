@@ -27,6 +27,7 @@ export const UserProvider = ({ children }) => {
     };
     fetchSession();
   }, []);
+  console.log("User:", user);
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {children}
