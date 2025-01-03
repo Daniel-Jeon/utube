@@ -13,6 +13,7 @@ import {
   getUserVideos,
   getUserData,
   postEditUser,
+  getSearchVideos,
 } from "../controllers/apiController";
 import {
   privateMiddleware,
@@ -39,6 +40,7 @@ apiRouter.post("/video/:id([0-9a-f]{24})", postConfirmOwner);
 apiRouter.delete("/video/:id([0-9a-f]{24})/delete", deleteVideo);
 apiRouter.post("/video/:id([0-9a-f]{24})/edit", postEditVideo);
 apiRouter.get("/videos", getVideos);
+apiRouter.get("/search", getSearchVideos);
 
 apiRouter.get("/user/:id([0-9a-f]{24})", getUserData);
 apiRouter.post(

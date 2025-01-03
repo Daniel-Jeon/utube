@@ -11,6 +11,7 @@ import Video from "./videos/Video";
 import EditVideo from "./videos/EditVideo";
 import Profile from "./users/Profile";
 import EditUser from "./users/EditUser";
+import Search from "./videos/Search";
 
 const App = () => {
   const { user } = useContext(UserContext);
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/video/:id" element={<Video />} />
           <Route path="/video/upload" element={user && <Upload />} />
           <Route path="/video/:id/edit" element={user && <EditVideo />} />
+          <Route path="/search" element={<Search />} />
         </Routes>
       </main>
       <Footer />

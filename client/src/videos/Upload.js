@@ -50,7 +50,6 @@ const Upload = () => {
       console.error("handleSubmit:", error);
     }
   };
-  console.log(upload);
   return (
     <div className="p-8 w-full max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">영상 업로드</h1>

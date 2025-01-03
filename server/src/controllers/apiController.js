@@ -146,6 +146,25 @@ export const getVideos = async (req, res) => {
   }
 };
 
+export const getSearchVideos = async (req, res) => {
+  console.log(req.query.keyword);
+  const { keyword } = req.query;
+  if (!keyword)
+    return res.status(400).json({
+      message: "검색어를 입력하세요.",
+    });
+  const searchVideos = await Video.find({
+    $or: [
+      { title: { $regex: keyword, $options: "i" } },
+      { description: { $regex: keyword, $options: "i" } },
+    ],
+  })
+    .populate("owner", "_id email nickname avatar")
+    .select("-__v");
+  if (!searchVideos) return res.status(204).json({ videos: searchVideos });
+  return res.status(200).json({ videos: searchVideos });
+};
+
 export const getVideoData = async (req, res) => {
   const { id } = req.params;
   const videoData = await Video.findById(id).populate(
