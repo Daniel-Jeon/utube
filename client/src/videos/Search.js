@@ -47,19 +47,24 @@ const Search = () => {
   const keyword = params.get("keyword");
   useEffect(() => {
     const fetchSearchVideos = async () => {
-      const response = await fetch(
-        `http://localhost:4000/api/search?keyword=${keyword}`,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const json = await response.json();
-      setVideos(json.videos);
+      try {
+        const response = await fetch(
+          `http://localhost:4000/api/search?keyword=${keyword}`,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        const json = await response.json();
+        setVideos(json.videos);
+      } catch (error) {
+        console.error("Search Error :", error);
+        alert("네트워크 에러가 발생하였습니다.\n잠시 후 다시 시도하세요.");
+      }
     };
     fetchSearchVideos();
   }, [keyword]);
   return (
-    <div className="p-8">
+    <div className="p-8 flex flex-col align-middle w-3/4 mx-auto">
       <h1 className="text-3xl font-bold mb-6">검색 : {keyword}</h1>
       {videos.length === 0 ? (
         <span>검색 조건에 맞는 영상이 없습니다.</span>

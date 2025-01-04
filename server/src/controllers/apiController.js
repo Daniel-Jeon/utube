@@ -147,22 +147,28 @@ export const getVideos = async (req, res) => {
 };
 
 export const getSearchVideos = async (req, res) => {
-  console.log(req.query.keyword);
   const { keyword } = req.query;
   if (!keyword)
     return res.status(400).json({
       message: "검색어를 입력하세요.",
     });
-  const searchVideos = await Video.find({
-    $or: [
-      { title: { $regex: keyword, $options: "i" } },
-      { description: { $regex: keyword, $options: "i" } },
-    ],
-  })
-    .populate("owner", "_id email nickname avatar")
-    .select("-__v");
-  if (!searchVideos) return res.status(204).json({ videos: searchVideos });
-  return res.status(200).json({ videos: searchVideos });
+  try {
+    const searchVideos = await Video.find({
+      $or: [
+        { title: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+      ],
+    })
+      .populate("owner", "_id email nickname avatar")
+      .select("-__v");
+    if (!searchVideos) return res.status(204).json({ videos: searchVideos });
+    return res.status(200).json({ videos: searchVideos });
+  } catch (error) {
+    console.error("getSearchVideos :", error);
+    return res
+      .status(500)
+      .json({ message: "검색 중 서버 오류 발생\n잠시 후 다시 시도하세요." });
+  }
 };
 
 export const getVideoData = async (req, res) => {
