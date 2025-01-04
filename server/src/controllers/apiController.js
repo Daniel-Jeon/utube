@@ -75,7 +75,7 @@ export const postLogout = (req, res) => {
   if (!req.session.user) {
     return res
       .status(401)
-      .json({ message: "잘못된 접근입니다.", success: false });
+      .json({ message: "접근 권한이 없습니다..", success: false });
   }
   req.session.destroy((error) => {
     if (error) {
@@ -213,12 +213,12 @@ export const postConfirmOwner = async (req, res) => {
   } = req;
   try {
     const videoData = await Video.findById(videoId);
-    if (!(String(videoData.owner) === String(userData.id)))
-      return res.status(403).json({ success: false });
-    return res.status(200).json({ success: true, videoData });
+    if (String(videoData.owner) !== String(userData.id))
+      return res.status(403).end();
+    return res.status(204).end();
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "서버 오류", success: false });
+    return res.status(500).end();
   }
 };
 
@@ -354,5 +354,33 @@ export const postEditUser = async (req, res) => {
     return res.status(500).json({
       message: "서버 오류 발생\n잠시후 다시 시도하세요.",
     });
+  }
+};
+
+export const postEditVideoMeta = async (req, res) => {
+  const { id: paramsId } = req.params;
+  const { videoId } = req.body;
+  const { meta } = req.query;
+  if (!paramsId || !videoId || !meta)
+    return res.status(400).json({ message: "잘못된 접근입니다. " });
+  if (String(paramsId) !== String(videoId))
+    return res.status(401).json({ message: "영상 정보가 맞지 않습니다." });
+  try {
+    let updateObj = {};
+    switch (meta) {
+      case "likes":
+        updateObj["meta.likes"] = 1;
+        break;
+      case "views":
+        updateObj["meta.views"] = 1;
+        break;
+    }
+    await Video.findByIdAndUpdate(videoId, { $inc: updateObj }, { new: true });
+    return res.status(200).json({ message: "좋아요!" });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "서버 오류 발생\n잠시후 다시 시도하세요." });
   }
 };

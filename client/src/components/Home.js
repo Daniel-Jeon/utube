@@ -29,7 +29,7 @@ const VideoList = ({ videos }) => {
             <div className="flex">
               <img
                 src={video.owner.avatar ? video.owner.avatar : "/default.webp"} // 기본 이미지 제공
-                alt={`${video.nickname}의 아바타`}
+                alt=""
                 className="w-12 h-12 rounded-full border border-gray-300 mr-4"
               />
               <p className="self-end">{video.owner.nickname}</p>
