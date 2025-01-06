@@ -2,8 +2,10 @@ import cors from "cors";
 import express from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import apiRouter from "./routers/apiRouter";
 import { localsMiddleware } from "./middleware";
+import rootRouter from "./routers/rootRouter";
+import userRouter from "./routers/userRouter";
+import videoRouter from "./routers/videoRouter";
 
 const app = express();
 
@@ -26,6 +28,8 @@ app.use(
 );
 app.use(localsMiddleware);
 
-app.use("/api", apiRouter);
+app.use("/api", rootRouter);
+app.use("/api/user", userRouter);
+app.use("/api/video", videoRouter);
 
 export default app;

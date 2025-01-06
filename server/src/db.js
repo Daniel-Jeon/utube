@@ -18,6 +18,7 @@ db.once("open", async () => {
     location: "오하이오",
     createdAt: Date.now(),
     videos: [],
+    comments: [],
     avatar: "",
   });
   await existingUser.save();
@@ -29,6 +30,7 @@ db.once("open", async () => {
     hashtags: Video.formatHashtags("오,우,야"),
     createdAt: Date.now(),
     owner: existingUser._id,
+    comments: [],
   });
   await testVideo.save();
   existingUser.videos.push(testVideo._id);

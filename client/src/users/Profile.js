@@ -74,7 +74,9 @@ const Profile = () => {
       <div className="flex justify-between">
         <h1 className="text-3xl font-bold mb-6">
           <img
-            src={`../${profileData.avatar}`}
+            src={
+              profileData.avatar ? `../${profileData.avatar}` : "/default.webp"
+            }
             alt=""
             className="w-20 h-20 rounded-full border border-gray-300 mr-4"
           />

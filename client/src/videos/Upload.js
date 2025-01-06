@@ -35,7 +35,7 @@ const Upload = () => {
     formData.append("description", upload.description);
     formData.append("hashtags", upload.hashtags);
     try {
-      const response = await fetch("http://localhost:4000/api/upload", {
+      const response = await fetch("http://localhost:4000/api/video/upload", {
         method: "POST",
         body: formData,
         credentials: "include",

@@ -47,6 +47,7 @@ const Video = () => {
   const [totalTime, setTotalTime] = useState(0);
   const [cooldown, setCooldown] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  // 서버에서 비디오 정보 가져오기
   useEffect(() => {
     const fetchVideoData = async () => {
       try {
@@ -75,6 +76,7 @@ const Video = () => {
     };
     fetchVideoData();
   }, [paramId, navigate]);
+  // 로그인한 유저가 비디오의 오너가 맞는지 확인
   useEffect(() => {
     if (!user || !videoData || !paramId) return;
     const fetchConfirmOwner = async () => {
@@ -145,7 +147,7 @@ const Video = () => {
   };
   const handleMetaViews = () => {
     // 시청시간 90%를 기준을 생각했으나 timeupdate 이벤트 딜레이로 인해 완화
-    if (!(totalTime >= videoRef.current.duration * 0.1)) return;
+    if (!(totalTime >= videoRef.current.duration * 0.8)) return;
     fetchMetaData(videoData._id, paramId, "views", setMetaViews);
   };
   const handleMetaLikes = () => {
@@ -179,7 +181,7 @@ const Video = () => {
           {/*여기서 2분할*/}
           <div className="flex">
             {/*좌측에 영상 정보를 출력*/}
-            <div className="flex-1 pl-24">
+            <div className="flex-1 pl-16">
               <h1 className="text-2xl font-bold mb-4">{videoData.title}</h1>
               <p className="text-gray-700 mb-4">{videoData.description}</p>
               <p className="text-blue-500 text-sm mb-4">{videoData.hashtags}</p>
@@ -199,9 +201,9 @@ const Video = () => {
               </div>
             </div>
             {/*우측에 메타테이터 및 버튼*/}
-            <div className="flex flex-1 flex-col items-center justify-center">
+            <div className="flex flex-1 flex-col items-end justify-center pr-16">
               {/*메타데이터*/}
-              <div className="flex-1 flex flex-col items-center justify-center">
+              <div className="flex-1 flex flex-col items-center justify-center pr-8">
                 <p className="text-2xl" onClick={handleMetaLikes}>
                   <Link>👍 : {metaLikes}</Link>
                 </p>
@@ -222,7 +224,7 @@ const Video = () => {
                   </button>
                   <button
                     onClick={handleDeleteVideo}
-                    className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600"
+                    className="bg-red-500 text-white mx-5 px-4 py-2 rounded shadow-md hover:bg-red-600"
                   >
                     삭제
                   </button>
@@ -230,6 +232,19 @@ const Video = () => {
               )}
             </div>
           </div>
+          <form method="POST">
+            <div className="my-12 px-48 flex">
+              <textarea
+                className="border border-gray-400 rounded-md h-24 w-10/12 mr-12 p-2"
+                placeholder="악플은 범죄입니다."
+                maxLength={300}
+                name="text"
+              />
+              <button className="bg-gray-200 rounded-md h-24 w-2/12">
+                입력
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </>

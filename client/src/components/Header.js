@@ -9,7 +9,7 @@ const Header = () => {
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/logout", {
+      const response = await fetch("http://localhost:4000/api/user/logout", {
         method: "POST",
         credentials: "include",
       });
