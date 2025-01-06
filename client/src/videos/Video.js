@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../contexts/User";
 
@@ -16,12 +16,14 @@ const fetchMetaData = async (videoId, paramId, meta, cbUpdateMeta) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ videoId }),
-        credentials: "include",
+        ...(meta === "likes" ? { credentials: "include" } : {}),
       }
     );
     const json = await response.json();
-    alert(json.message);
-    if (!response.ok) return;
+    if (!response.ok) {
+      alert(json.message);
+      return;
+    }
     cbUpdateMeta((prevState) => prevState + 1);
   } catch (error) {
     console.error(error);
@@ -34,10 +36,17 @@ const Video = () => {
   const navigate = useNavigate();
   const { id: paramId } = useParams();
   const location = useLocation();
+
+  const videoRef = useRef(0);
+  const prevRef = useRef(0);
+
   const [owner, setOwner] = useState(false);
   const [videoData, setVideoData] = useState(location.state?.video || null);
   const [metaLikes, setMetaLikes] = useState(0);
   const [metaViews, setMetaViews] = useState(0);
+  const [totalTime, setTotalTime] = useState(0);
+  const [cooldown, setCooldown] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   useEffect(() => {
     const fetchVideoData = async () => {
       try {
@@ -89,6 +98,11 @@ const Video = () => {
     };
     fetchConfirmOwner();
   }, [paramId, user, videoData]);
+  useEffect(() => {
+    if (!cooldown) return;
+    const timeout = setTimeout(() => setCooldown(false), 60 * 60 * 24 * 1000);
+    return () => clearTimeout(timeout);
+  }, [cooldown]);
   const handleDeleteVideo = async (event) => {
     event.preventDefault();
     // 홈에서 가져온 영상 정보의 소유주와 전역 상태 관리중인 유저 정보를 비교
@@ -116,6 +130,32 @@ const Video = () => {
       alert("네트워크 에러가 발생하였습니다.\n잠시 후 다시 시도하세요.");
     }
   };
+  const handleTimeUpdate = () => {
+    if (!isPlaying) return;
+    const currentTime = videoRef.current.currentTime;
+    if (currentTime > prevRef.current)
+      setTotalTime((prevState) => prevState + (currentTime - prevRef.current));
+    prevRef.current = currentTime;
+  };
+  const handleOnPlay = () => {
+    setIsPlaying(true);
+  };
+  const handleOnPause = () => {
+    setIsPlaying(false);
+  };
+  const handleMetaViews = () => {
+    // 시청시간 90%를 기준을 생각했으나 timeupdate 이벤트 딜레이로 인해 완화
+    if (!(totalTime >= videoRef.current.duration * 0.1)) return;
+    fetchMetaData(videoData._id, paramId, "views", setMetaViews);
+  };
+  const handleMetaLikes = () => {
+    if (cooldown) {
+      alert("좋아요를 반복해서 누를 수 없습니다.");
+      return;
+    }
+    setCooldown(true);
+    fetchMetaData(videoData._id, paramId, "likes", setMetaLikes);
+  };
   return (
     <>
       {videoData && (
@@ -125,6 +165,11 @@ const Video = () => {
               className="rounded-md border border-gray-300"
               controls
               width="50%"
+              ref={videoRef}
+              onTimeUpdate={handleTimeUpdate}
+              onPlay={handleOnPlay}
+              onPause={handleOnPause}
+              onEnded={handleMetaViews}
             >
               <source
                 src={"http://localhost:4000/" + videoData.filepath}
@@ -134,7 +179,7 @@ const Video = () => {
           {/*여기서 2분할*/}
           <div className="flex">
             {/*좌측에 영상 정보를 출력*/}
-            <div className="flex-1">
+            <div className="flex-1 pl-24">
               <h1 className="text-2xl font-bold mb-4">{videoData.title}</h1>
               <p className="text-gray-700 mb-4">{videoData.description}</p>
               <p className="text-blue-500 text-sm mb-4">{videoData.hashtags}</p>
@@ -157,18 +202,11 @@ const Video = () => {
             <div className="flex flex-1 flex-col items-center justify-center">
               {/*메타데이터*/}
               <div className="flex-1 flex flex-col items-center justify-center">
-                <p
-                  className="text-2xl"
-                  onClick={() =>
-                    fetchMetaData(videoData._id, paramId, "likes", setMetaLikes)
-                  }
-                >
+                <p className="text-2xl" onClick={handleMetaLikes}>
                   <Link>👍 : {metaLikes}</Link>
                 </p>
                 <br />
-                <p className="text-2xl">
-                  <Link onClick="">시청수 : {metaViews}</Link>
-                </p>
+                <p className="text-2xl">시청수 : {metaViews}</p>
               </div>
               {owner && (
                 <div className="flex-1 flex items-center">

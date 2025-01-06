@@ -376,7 +376,7 @@ export const postEditVideoMeta = async (req, res) => {
         break;
     }
     await Video.findByIdAndUpdate(videoId, { $inc: updateObj }, { new: true });
-    return res.status(200).json({ message: "좋아요!" });
+    return res.status(200).json({});
   } catch (error) {
     console.error(error);
     return res
