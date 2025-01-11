@@ -22,17 +22,24 @@ db.once("open", async () => {
     avatar: "",
   });
   await existingUser.save();
-  if (existingUser.videos.length >= 1) return;
-  const testVideo = new Video({
-    filepath: "uploads/test.mp4",
-    title: "테슷흐 영상",
-    description: "지렸다...지렸다...지렸다...",
-    hashtags: Video.formatHashtags("오,우,야"),
-    createdAt: Date.now(),
-    owner: existingUser._id,
-    comments: [],
-  });
-  await testVideo.save();
-  existingUser.videos.push(testVideo._id);
+  if (existingUser.videos.length >= 20) {
+    console.log("이미 20개 이상의 영상이 존재합니다.");
+    return;
+  }
+  const videoPromises = [];
+  for (let i = 1; i <= 20; i++) {
+    const testVideo = new Video({
+      filepath: `uploads/test.mp4`,
+      title: `테슷흐 영상 ${i}`,
+      description: `끼야호우 (${i})`,
+      hashtags: Video.formatHashtags("무,야,호"),
+      createdAt: Date.now(),
+      owner: existingUser._id,
+      comments: [],
+    });
+    videoPromises.push(testVideo.save());
+  }
+  const savedVideos = await Promise.all(videoPromises);
+  existingUser.videos = savedVideos.map((video) => video._id);
   await existingUser.save();
 });

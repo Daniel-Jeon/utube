@@ -74,7 +74,7 @@ export const postEditUser = async (req, res) => {
   )
     return res.status(401).json({ message: "비밀번호가 입력되지 않았습니다." });
   try {
-    const userData = await User.findOne({ _id: user.id }).select("-videos");
+    let userData = await User.findOne({ _id: user.id }).select("-videos");
     if (!userData)
       return res
         .status(404)
@@ -95,8 +95,17 @@ export const postEditUser = async (req, res) => {
     };
     if (password) updateData.password = await bcrypt.hash(password, 10);
     await User.updateOne({ _id: user.id }, updateData, { new: true });
+    userData = await User.findOne({ _id: user.id }).select("-videos");
+    console.log(userData);
+    req.session.user = {
+      id: userData._id,
+      email: userData.email,
+      nickname: userData.nickname,
+      avatar: userData.avatar,
+    };
     return res.status(200).json({
       message: "유저 정보가 변경되었습니다.",
+      user: req.session.user,
     });
   } catch (error) {
     console.error(error);

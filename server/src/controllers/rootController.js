@@ -56,6 +56,7 @@ export const postLogin = async (req, res) => {
       id: existingUser._id,
       email: existingUser.email,
       nickname: existingUser.nickname,
+      avatar: existingUser.avatar,
     };
     return res.status(200).json({
       message: "로그인 성공하였습니다.",

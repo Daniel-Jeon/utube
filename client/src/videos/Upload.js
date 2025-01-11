@@ -87,7 +87,7 @@ const Upload = () => {
           onChange={handleChange}
           className="block w-full h-12 border border-gray-300 rounded-lg p-3"
         />
-        <button className="w-full bg-blue-500 font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300">
+        <button className="w-full bg-blue-500 font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300 text-white">
           업로드
         </button>
       </form>

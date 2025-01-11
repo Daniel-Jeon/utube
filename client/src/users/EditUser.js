@@ -4,7 +4,7 @@ import { checkPassword } from "../utils/validation";
 import { UserContext } from "../contexts/User";
 
 const EditUser = () => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const params = useParams().id;
   const passwordRef = useRef("");
   const currentPasswordRef = useRef("");
@@ -57,7 +57,6 @@ const EditUser = () => {
 
   const handleChange = (event) => {
     const { name, value, files } = event.target;
-    console.log("change:", files);
     if (name === "avatar") {
       setUpdateData((prevState) => ({
         ...prevState,
@@ -108,6 +107,12 @@ const EditUser = () => {
         currentPasswordRef.current.focus();
         return;
       }
+      setUser({
+        id: json.user.id,
+        email: json.user.email,
+        nickname: json.user.nickname,
+        avatar: json.user.avatar,
+      });
       navigate(`/user/${user.id}`);
     } catch (error) {
       console.error("Join Error:", error);

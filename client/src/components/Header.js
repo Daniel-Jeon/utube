@@ -16,8 +16,8 @@ const Header = () => {
       const json = await response.json();
       alert(json.message);
       if (!json.success) navigate("/login");
-      setUser(null);
       navigate("/");
+      setUser(null);
     } catch (error) {
       console.error("logout error:", error);
       alert("로그아웃 중 문제가 발생했습니다.\n", error);
