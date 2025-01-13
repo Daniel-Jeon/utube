@@ -9,10 +9,13 @@ const Header = () => {
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/user/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      const response = await fetch(
+        process.env.REACT_APP_API_URL + "/api/user/logout",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
       const json = await response.json();
       alert(json.message);
       if (!json.success) navigate("/login");

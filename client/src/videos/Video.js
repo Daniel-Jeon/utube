@@ -9,7 +9,7 @@ const fetchMetaData = async (videoId, paramId, meta, cbUpdateMeta) => {
   }
   try {
     const response = await fetch(
-      `http://localhost:4000/api/video/${videoId}/meta?meta=${meta}`,
+      `${process.env.REACT_APP_API_URL}/api/video/${videoId}/meta?meta=${meta}`,
       {
         method: "POST",
         headers: {
@@ -55,7 +55,7 @@ const Video = () => {
     const fetchVideoData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:4000/api/video/${paramId}`,
+          `${process.env.REACT_APP_API_URL}/api/video/${paramId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -84,7 +84,7 @@ const Video = () => {
     const fetchCommentData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:4000/api/video/${paramId}/comments`,
+          `${process.env.REACT_APP_API_URL}/api/video/${paramId}/comments`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -107,7 +107,7 @@ const Video = () => {
     const fetchConfirmOwner = async () => {
       try {
         const response = await fetch(
-          `http://localhost:4000/api/video/${paramId}`,
+          `${process.env.REACT_APP_API_URL}/api/video/${paramId}`,
           {
             method: "POST",
             headers: {
@@ -140,7 +140,7 @@ const Video = () => {
     }
     try {
       const response = await fetch(
-        `http://localhost:4000/api/video/${paramId}/delete`,
+        `${process.env.REACT_APP_API_URL}/api/video/${paramId}/delete`,
         {
           method: "DELETE",
           headers: {
@@ -171,7 +171,7 @@ const Video = () => {
     }
     try {
       const response = await fetch(
-        `http://localhost:4000/api/video/${paramId}/comment`,
+        `${process.env.REACT_APP_API_URL}/api/video/${paramId}/comment`,
         {
           method: "POST",
           headers: {
@@ -192,7 +192,7 @@ const Video = () => {
   const handleDeleteComment = async (commentId) => {
     try {
       const response = await fetch(
-        `http://localhost:4000/api/video/${paramId}/comment/${commentId}`,
+        `${process.env.REACT_APP_API_URL}/api/video/${paramId}/comment/${commentId}`,
         {
           method: "DELETE",
           headers: {
@@ -259,7 +259,7 @@ const Video = () => {
               muted
             >
               <source
-                src={"http://localhost:4000/" + videoData.filepath}
+                src={`${process.env.REACT_APP_API_URL}/${videoData.filepath}`}
               ></source>
             </video>
           </div>
@@ -274,7 +274,7 @@ const Video = () => {
                 <img
                   src={
                     videoData.owner.avatar
-                      ? `http://localhost:4000/${videoData.owner.avatar}`
+                      ? `${process.env.REACT_APP_API_URL}/${videoData.owner.avatar}`
                       : "/default.webp"
                   }
                   alt=""
@@ -323,7 +323,7 @@ const Video = () => {
                 <img
                   src={
                     user.avatar
-                      ? `http://localhost:4000/${user.avatar}`
+                      ? `${process.env.REACT_APP_API_URL}/${user.avatar}`
                       : "/default.webp"
                   }
                   alt=""
@@ -352,7 +352,7 @@ const Video = () => {
                   className="mr-2 w-12 h-12"
                   src={
                     comment.owner.avatar
-                      ? `http://localhost:4000/${comment.owner.avatar}`
+                      ? `${process.env.REACT_APP_API_URL}/${comment.owner.avatar}`
                       : "/default.webp"
                   }
                   alt=""

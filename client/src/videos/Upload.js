@@ -35,11 +35,14 @@ const Upload = () => {
     formData.append("description", upload.description);
     formData.append("hashtags", upload.hashtags);
     try {
-      const response = await fetch("http://localhost:4000/api/video/upload", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
+      const response = await fetch(
+        process.env.REACT_APP_API_URL + "/api/video/upload",
+        {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        }
+      );
       const json = await response.json();
       console.log(json);
       alert(json.message);

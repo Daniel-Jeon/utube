@@ -21,12 +21,15 @@ const EditUser = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const response = await fetch(`http://localhost:4000/api/user/${params}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/user/${params}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
       const json = await response.json();
       if (json.message) alert(json.message);
       if (!json.success) {
@@ -91,7 +94,7 @@ const EditUser = () => {
     try {
       const response = await fetch(
         // 유저 정보 수정에는 세션정보가 적합하다고 생각
-        `http://localhost:4000/api/user/${user.id}/edit`,
+        `${process.env.REACT_APP_API_URL}/api/user/${user.id}/edit`,
         {
           method: "POST",
           body: formData,

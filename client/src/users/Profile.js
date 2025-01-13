@@ -31,7 +31,7 @@ const VideoList = ({ videos }) => {
               <img
                 src={
                   video.owner.avatar
-                    ? `../${video.owner.avatar}`
+                    ? `${process.env.REACT_APP_API_URL}/${video.owner.avatar}`
                     : "/default.webp"
                 }
                 alt=""
@@ -55,7 +55,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserVideos = async () => {
       const response = await fetch(
-        `http://localhost:4000/api/user/${params}/videos`,
+        `${process.env.REACT_APP_API_URL}/api/user/${params}/videos`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -75,7 +75,9 @@ const Profile = () => {
         <h1 className="text-3xl font-bold mb-6">
           <img
             src={
-              profileData.avatar ? `../${profileData.avatar}` : "/default.webp"
+              profileData.avatar
+                ? `${process.env.REACT_APP_API_URL}/${profileData.avatar}`
+                : "/default.webp"
             }
             alt=""
             className="w-20 h-20 rounded-full border border-gray-300 mr-4"

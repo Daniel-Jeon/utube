@@ -28,7 +28,11 @@ const VideoList = ({ videos }) => {
             <li className="text-gray-500">{formateDate(video.createdAt)}</li>
             <div className="flex">
               <img
-                src={video.owner.avatar ? video.owner.avatar : "/default.webp"} // 기본 이미지 제공
+                src={
+                  video.owner.avatar
+                    ? `${process.env.REACT_APP_API_URL}/${video.owner.avatar}`
+                    : "/default.webp"
+                } // 기본 이미지 제공
                 alt=""
                 className="w-12 h-12 rounded-full border border-gray-300 mr-4"
               />
@@ -47,11 +51,14 @@ const Home = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/videos", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          process.env.REACT_APP_API_URL + "/api/videos",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         const json = await response.json();
         if (!json.success) return;
         setVideos(json.videos);

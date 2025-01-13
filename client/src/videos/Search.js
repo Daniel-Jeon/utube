@@ -49,7 +49,7 @@ const Search = () => {
     const fetchSearchVideos = async () => {
       try {
         const response = await fetch(
-          `http://localhost:4000/api/search?keyword=${keyword}`,
+          `${process.env.REACT_APP_API_URL}/api/search?keyword=${keyword}`,
           {
             headers: { "Content-Type": "application/json" },
           }
