@@ -28,7 +28,7 @@ const Join = () => {
       return;
     }
     try {
-      const data = await fetch(process.env.REACT_APP_API_URL + "/api/join", {
+      const data = await fetch(`${process.env.REACT_APP_API_URL}/api/join`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
