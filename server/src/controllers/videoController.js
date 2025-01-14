@@ -1,6 +1,6 @@
-import User from "../models/User";
-import Video from "../models/Video";
-import Comment from "../models/Comment";
+import User from "../models/User.js";
+import Video from "../models/Video.js";
+import Comment from "../models/Comment.js";
 
 export const postUpload = async (req, res) => {
   const {

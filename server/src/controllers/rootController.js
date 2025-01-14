@@ -1,5 +1,5 @@
-import User from "../models/User";
-import Video from "../models/Video";
+import User from "../models/User.js";
+import Video from "../models/Video.js";
 import bcrypt from "bcrypt";
 
 export const postJoin = async (req, res) => {
@@ -58,6 +58,7 @@ export const postLogin = async (req, res) => {
       nickname: existingUser.nickname,
       avatar: existingUser.avatar,
     };
+    console.log(req.session);
     return res.status(200).json({
       message: "로그인 성공하였습니다.",
       success: true,

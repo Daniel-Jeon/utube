@@ -9,12 +9,12 @@ import {
   postVideoComment,
   getComments,
   deleteComment,
-} from "../controllers/videoController";
+} from "../controllers/videoController.js";
 import {
   privateMiddleware,
   publicMiddleware,
   uploadVideoMiddleware,
-} from "../middleware";
+} from "../middleware.js";
 
 const videoRouter = express.Router();
 

@@ -1,5 +1,5 @@
-import User from "../models/User";
-import Video from "../models/Video";
+import User from "../models/User.js";
+import Video from "../models/Video.js";
 import bcrypt from "bcrypt";
 
 export const postLogout = (req, res) => {

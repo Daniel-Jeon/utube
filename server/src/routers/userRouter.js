@@ -4,12 +4,12 @@ import {
   getUserData,
   getUserVideos,
   postEditUser,
-} from "../controllers/userController";
+} from "../controllers/userController.js";
 import {
   privateMiddleware,
   publicMiddleware,
   uploadImageMiddleware,
-} from "../middleware";
+} from "../middleware.js";
 
 const userRouter = express.Router();
 

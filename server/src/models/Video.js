@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import User from "./User";
+import User from "./User.js";
 
 const videoSchema = new mongoose.Schema({
   filepath: { type: String, required: true, trim: true },

@@ -5,8 +5,8 @@ import {
   getSession,
   getVideos,
   getSearchVideos,
-} from "../controllers/rootController";
-import { privateMiddleware, publicMiddleware } from "../middleware";
+} from "../controllers/rootController.js";
+import { privateMiddleware, publicMiddleware } from "../middleware.js";
 
 const rootRouter = express.Router();
 

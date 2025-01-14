@@ -38,6 +38,7 @@ export const uploadVideoMiddleware = multer({
       );
     },
   }),
+  limits: { fileSize: 10 * 1024 * 1024 },
 });
 
 export const uploadImageMiddleware = multer({
@@ -52,4 +53,5 @@ export const uploadImageMiddleware = multer({
       );
     },
   }),
+  limits: { fileSize: 1 * 1024 * 1024 },
 });
