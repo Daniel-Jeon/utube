@@ -44,8 +44,10 @@ const VideoList = ({ videos }) => {
                 className="flex items-center"
               >
                 <img
-                  src={video.owner.avatar || "/default-avatar.jpg"} // 기본 아바타 제공
-                  alt={`${video.owner.nickname}의 아바타`}
+                  src={
+                    video.owner.avatar ? video.owner.avatar : "/default.webp"
+                  }
+                  alt="."
                   className="w-10 h-10 rounded-full border border-gray-300 mr-2"
                 />
                 <p className="text-gray-700">{video.owner.nickname}</p>
@@ -82,6 +84,7 @@ const Search = () => {
     };
     fetchSearchVideos();
   }, [keyword]);
+  console.log(videos);
   return (
     <div className="p-8 flex flex-col align-middle w-11/12 mx-auto">
       <h1 className="text-3xl font-bold mb-6">검색 : {keyword}</h1>
