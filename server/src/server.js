@@ -41,5 +41,3 @@ app.use("/api/video", videoRouter);
 app.listen(process.env.PORT, "0.0.0.0", () =>
   console.log("✅ Server Connected ✅")
 );
-
-console.log(process.env.NODE_ENV);

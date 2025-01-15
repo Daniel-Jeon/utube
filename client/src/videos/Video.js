@@ -258,9 +258,7 @@ const Video = () => {
               autoPlay
               muted
             >
-              <source
-                src={`${process.env.REACT_APP_API_URL}/${videoData.filepath}`}
-              ></source>
+              <source src={videoData.filepath}></source>
             </video>
           </div>
           {/*여기서 2분할*/}
@@ -274,7 +272,7 @@ const Video = () => {
                 <img
                   src={
                     videoData.owner.avatar
-                      ? `${process.env.REACT_APP_API_URL}/${videoData.owner.avatar}`
+                      ? videoData.owner.avatar
                       : "/default.webp"
                   }
                   alt=""
@@ -321,11 +319,7 @@ const Video = () => {
             <form method="POST" onSubmit={handleSubmitComment}>
               <div className="my-12 px-20 flex items-center justify-center">
                 <img
-                  src={
-                    user.avatar
-                      ? `${process.env.REACT_APP_API_URL}/${user.avatar}`
-                      : "/default.webp"
-                  }
+                  src={user.avatar ? user.avatar : "/default.webp"}
                   alt=""
                   className="w-12 h-12 rounded-full border border-gray-300 mr-4"
                 />
@@ -352,7 +346,7 @@ const Video = () => {
                   className="mr-2 w-12 h-12"
                   src={
                     comment.owner.avatar
-                      ? `${process.env.REACT_APP_API_URL}/${comment.owner.avatar}`
+                      ? comment.owner.avatar
                       : "/default.webp"
                   }
                   alt=""

@@ -1,5 +1,32 @@
 import multer from "multer";
-import path from "path";
+import { S3Client } from "@aws-sdk/client-s3";
+import multerS3 from "multer-s3";
+
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+
+const s3VideoStorage = multerS3({
+  s3: s3Client,
+  bucket: process.env.AWS_S3_BUCKET_NAME,
+  acl: "public-read",
+  key: function (req, file, cb) {
+    cb(null, `videos/${req.session.user.id}/${Date.now().toString()}`);
+  },
+});
+
+const s3ImageStorage = multerS3({
+  s3: s3Client,
+  bucket: process.env.AWS_S3_BUCKET_NAME,
+  acl: "public-read",
+  key: function (req, file, cb) {
+    cb(null, `images/${req.session.user.id}/${Date.now().toString()}`);
+  },
+});
 
 export const localsMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn);
@@ -26,6 +53,17 @@ export const publicMiddleware = (req, res, next) => {
   next();
 };
 
+export const uploadVideoMiddleware = multer({
+  limits: { fileSize: 10 * 1024 * 1024 },
+  storage: s3VideoStorage,
+});
+
+export const uploadImageMiddleware = multer({
+  limits: { fileSize: 1 * 1024 * 1024 },
+  storage: s3ImageStorage,
+});
+
+/*
 export const uploadVideoMiddleware = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
@@ -55,3 +93,4 @@ export const uploadImageMiddleware = multer({
   }),
   limits: { fileSize: 1 * 1024 * 1024 },
 });
+*/

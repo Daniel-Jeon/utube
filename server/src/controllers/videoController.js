@@ -4,7 +4,7 @@ import Comment from "../models/Comment.js";
 
 export const postUpload = async (req, res) => {
   const {
-    file: { path: filepath },
+    file: { location: filepath },
     body: { title, description, hashtags },
     session,
   } = req;

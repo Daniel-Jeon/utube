@@ -89,7 +89,7 @@ export const postEditUser = async (req, res) => {
         .json({ message: "기존 비밀번호와 맞지 않습니다." });
     }
     const updateData = {
-      avatar: file ? file.path : "",
+      avatar: file ? file.location : "",
       nickname,
       location,
     };

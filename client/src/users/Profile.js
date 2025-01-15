@@ -29,11 +29,7 @@ const VideoList = ({ videos }) => {
             <li>{formateDate(video.createdAt)}</li>
             <div className="flex">
               <img
-                src={
-                  video.owner.avatar
-                    ? `${process.env.REACT_APP_API_URL}/${video.owner.avatar}`
-                    : "/default.webp"
-                }
+                src={video.owner.avatar ? video.owner.avatar : "/default.webp"}
                 alt=""
                 className="w-16 h-16 rounded-full border border-gray-300 mr-4"
               />
@@ -69,16 +65,13 @@ const Profile = () => {
     };
     fetchUserVideos();
   }, [params]);
+  console.log(profileData);
   return (
     <div className="p-8">
       <div className="flex justify-between">
         <h1 className="text-3xl font-bold mb-6">
           <img
-            src={
-              profileData.avatar
-                ? `${process.env.REACT_APP_API_URL}/${profileData.avatar}`
-                : "/default.webp"
-            }
+            src={profileData.avatar ? profileData.avatar : "/default.webp"}
             alt=""
             className="w-20 h-20 rounded-full border border-gray-300 mr-4"
           />
