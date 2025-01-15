@@ -5,38 +5,57 @@ const VideoList = ({ videos }) => {
   const formateDate = (createdAt) => {
     const date = new Date(createdAt);
     return date.toLocaleDateString("ko-KR", {
-      year: "numeric",
+      year: "2-digit",
       month: "long",
       day: "numeric",
-      weekday: "long",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   };
   return (
     <>
       {videos.map((video) => (
-        <ul key={video._id}>
-          <div className="border border-gray-300 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-            <h1 className="text-2xl font-semibold">
+        <div
+          key={video._id}
+          className="flex border border-gray-300 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow mb-4"
+        >
+          {/* 썸네일 */}
+          <div className="flex-shrink-0 w-80 h-40 bg-gray-200 rounded-md overflow-hidden mr-4">
+            <Link to={`/video/${video._id}`} state={{ video }}>
+              <img
+                src={video.thumbnail || "/default-thumbnail.jpg"}
+                alt={`${video.title} 썸네일`}
+                className="w-full h-full object-cover"
+              />
+            </Link>
+          </div>
+
+          {/* 비디오 정보 */}
+          <div className="flex-grow">
+            <h1 className="text-xl font-bold mb-2">
               <Link to={`/video/${video._id}`} state={{ video }}>
                 {video.title}
               </Link>
             </h1>
-            <p className="text-gray-500">{video.description}</p>
-            <li className="text-gray-500">{video.hashtags + ""}</li>
-            <li className="text-gray-500">{formateDate(video.createdAt)}</li>
-            <div className="flex">
-              <img
-                src={video.owner.avatar ? video.owner.avatar : "/default.webp"} // 기본 이미지 제공
-                alt={`${video.nickname}의 아바타`}
-                className="w-12 h-12 rounded-full border border-gray-300 mr-4"
-              />
-              <p className="self-end">{video.owner.nickname}</p>
+            <p className="text-gray-400 text-sm">
+              조회수 {video.meta.views} • {formateDate(video.createdAt)}
+            </p>
+            <div className="flex items-center my-2">
+              <Link
+                to={`/user/${video.owner._id}`}
+                className="flex items-center"
+              >
+                <img
+                  src={video.owner.avatar || "/default-avatar.jpg"} // 기본 아바타 제공
+                  alt={`${video.owner.nickname}의 아바타`}
+                  className="w-10 h-10 rounded-full border border-gray-300 mr-2"
+                />
+                <p className="text-gray-700">{video.owner.nickname}</p>
+              </Link>
             </div>
+            <p className="text-gray-500 mb-2 line-clamp-2">
+              {video.description}
+            </p>
           </div>
-          <br />
-        </ul>
+        </div>
       ))}
     </>
   );
@@ -64,7 +83,7 @@ const Search = () => {
     fetchSearchVideos();
   }, [keyword]);
   return (
-    <div className="p-8 flex flex-col align-middle w-3/4 mx-auto">
+    <div className="p-8 flex flex-col align-middle w-11/12 mx-auto">
       <h1 className="text-3xl font-bold mb-6">검색 : {keyword}</h1>
       {videos.length === 0 ? (
         <span>검색 조건에 맞는 영상이 없습니다.</span>
