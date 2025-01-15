@@ -5,16 +5,18 @@ const Upload = () => {
   const navigate = useNavigate();
   const [upload, setUpload] = useState({
     video: null,
+    thumbnail: null,
     title: "",
     description: "",
     hashtags: "",
   });
   const handleChange = (event) => {
     const { name, value, files } = event.target;
-    if (name === "video") {
+    if (name === "video" || name === "thumbnail") {
+      console.log(`${name} 파일 선택됨:`, files[0]);
       setUpload((prevState) => ({
         ...prevState,
-        video: files[0],
+        [name]: files[0],
       }));
     } else {
       setUpload((prevState) => ({
@@ -22,15 +24,17 @@ const Upload = () => {
         [name]: value,
       }));
     }
+    console.log("현재 상태:", upload);
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!upload.video) {
-      alert("업로드한 파일이 없습니다.");
+    if (!upload.video || !upload.thumbnail) {
+      alert("영상과 썸네일을 모두 업로드해야 합니다.");
       return;
     }
     const formData = new FormData();
     formData.append("video", upload.video);
+    formData.append("thumbnail", upload.thumbnail);
     formData.append("title", upload.title);
     formData.append("description", upload.description);
     formData.append("hashtags", upload.hashtags);
@@ -57,14 +61,37 @@ const Upload = () => {
     <div className="p-8 w-full max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">영상 업로드</h1>
       <form method="POST" onSubmit={handleSubmit} className="space-y-6">
-        <input
-          type="file"
-          name="video"
-          onChange={handleChange}
-          accept="video/*"
-          required
-          className="block w-full border border-gray-300 rounded-lg p-3"
-        />
+        {/* 비디오 파일 업로드 */}
+        <div className="flex items-center space-x-4">
+          <label className="text-lg font-medium w-32" htmlFor="video">
+            영상 파일
+          </label>
+          <input
+            type="file"
+            name="video"
+            id="video"
+            onChange={handleChange}
+            accept="video/*"
+            required
+            className="flex-1 border border-gray-300 rounded-lg p-3"
+          />
+        </div>
+
+        {/* 썸네일 이미지 업로드 */}
+        <div className="flex items-center space-x-4">
+          <label className="text-lg font-medium w-32" htmlFor="thumbnail">
+            썸네일 이미지
+          </label>
+          <input
+            type="file"
+            name="thumbnail"
+            id="thumbnail"
+            onChange={handleChange}
+            accept="image/*"
+            required
+            className="flex-1 border border-gray-300 rounded-lg p-3"
+          />
+        </div>
         <input
           type="text"
           placeholder="영상 제목"

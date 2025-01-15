@@ -28,6 +28,15 @@ const s3ImageStorage = multerS3({
   },
 });
 
+const s3ThumbnailStorage = multerS3({
+  s3: s3Client,
+  bucket: process.env.AWS_S3_BUCKET_NAME,
+  acl: "public-read",
+  key: function (req, file, cb) {
+    cb(null, `thumbnails/${req.session.user.id}/${Date.now().toString()}`);
+  },
+});
+
 export const localsMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn);
   res.locals.siteName = "U tube";
@@ -54,43 +63,44 @@ export const publicMiddleware = (req, res, next) => {
 };
 
 export const uploadVideoMiddleware = multer({
-  limits: { fileSize: 10 * 1024 * 1024 },
-  storage: s3VideoStorage,
-});
+  storage: multerS3({
+    s3: s3Client,
+    bucket: process.env.AWS_S3_BUCKET_NAME,
+    acl: "public-read",
+    key: function (req, file, cb) {
+      const folder = file.fieldname === "video" ? "videos" : "thumbnails";
+      cb(null, `${folder}/${req.session.user.id}/${Date.now().toString()}`);
+    },
+  }),
+  fileFilter: (req, file, cb) => {
+    if (file.fieldname === "video") {
+      // 비디오 파일 필터링
+      if (!file.mimetype.startsWith("video/")) {
+        return cb(new Error("비디오 파일만 업로드 가능합니다."), false);
+      }
+    } else if (file.fieldname === "thumbnail") {
+      // 썸네일 파일 필터링
+      if (!file.mimetype.startsWith("image/")) {
+        return cb(new Error("이미지 파일만 업로드 가능합니다."), false);
+      }
+    }
+    cb(null, true);
+  },
+  limits: {
+    fileSize: (req, file, cb) => {
+      if (file.fieldname === "video") {
+        cb(null, 10 * 1024 * 1024);
+      } else if (file.fieldname === "thumbnail") {
+        cb(null, 1 * 1024 * 1024);
+      }
+    },
+  },
+}).fields([
+  { name: "video", maxCount: 1 },
+  { name: "thumbnail", maxCount: 1 },
+]);
 
 export const uploadImageMiddleware = multer({
   limits: { fileSize: 1 * 1024 * 1024 },
   storage: s3ImageStorage,
 });
-
-/*
-export const uploadVideoMiddleware = multer({
-  storage: multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, "uploads/videos");
-    },
-    filename: function (req, file, cb) {
-      cb(
-        null,
-        req.session.user.id + "_" + Date.now() + path.extname(file.originalname)
-      );
-    },
-  }),
-  limits: { fileSize: 10 * 1024 * 1024 },
-});
-
-export const uploadImageMiddleware = multer({
-  storage: multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, "uploads/images");
-    },
-    filename: function (req, file, cb) {
-      cb(
-        null,
-        req.session.user.id + "_" + Date.now() + path.extname(file.originalname)
-      );
-    },
-  }),
-  limits: { fileSize: 1 * 1024 * 1024 },
-});
-*/

@@ -18,23 +18,25 @@ const App = () => {
   console.log("API URL :", process.env.REACT_APP_API_URL);
   return (
     <BrowserRouter>
-      <Header user={user} />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/join" element={!user && <Join />} />
-          <Route path="/login" element={!user && <Login />} />
+      <div className="flex flex-col min-h-screen">
+        <Header user={user} />
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/join" element={!user && <Join />} />
+            <Route path="/login" element={!user && <Login />} />
 
-          <Route path="/user/:id" element={<Profile />} />
-          <Route path="/user/:id/edit" element={<EditUser />} />
+            <Route path="/user/:id" element={<Profile />} />
+            <Route path="/user/:id/edit" element={<EditUser />} />
 
-          <Route path="/video/:id" element={<Video />} />
-          <Route path="/video/upload" element={user && <Upload />} />
-          <Route path="/video/:id/edit" element={user && <EditVideo />} />
-          <Route path="/search" element={<Search />} />
-        </Routes>
-      </main>
-      <Footer />
+            <Route path="/video/:id" element={<Video />} />
+            <Route path="/video/upload" element={user && <Upload />} />
+            <Route path="/video/:id/edit" element={user && <EditVideo />} />
+            <Route path="/search" element={<Search />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 };

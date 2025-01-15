@@ -4,7 +4,7 @@ import Comment from "../models/Comment.js";
 
 export const postUpload = async (req, res) => {
   const {
-    file: { location: filepath },
+    files,
     body: { title, description, hashtags },
     session,
   } = req;
@@ -12,27 +12,32 @@ export const postUpload = async (req, res) => {
     return res
       .status(401)
       .json({ message: "로그인이 필요합니다.", success: false });
-  if (!req.file)
-    return res
-      .status(400)
-      .json({ message: "업로드한 파일이 없습니다.", success: false });
+  if (!files || !files.video || !files.thumbnail)
+    return res.status(400).json({
+      message: "비디오와 썸네일 파일이 필요합니다.",
+      success: false,
+    });
   try {
+    // 파일 정보 추출
+    const videoFile = files.video[0]; // 비디오 파일 정보
+    const thumbnailFile = files.thumbnail[0]; // 썸네일 파일 정보
     const videoData = await Video.create({
-      filepath,
+      filepath: videoFile.location,
+      thumbnail: thumbnailFile.location,
       title,
       description,
       hashtags: Video.formatHashtags(hashtags),
       owner: session.user.id,
     });
-    //console.log(typeof videoData._id);
+    // 사용자 정보 업데이트
     const userData = await User.findById(session.user.id);
     userData.videos.push(videoData._id);
-    userData.save();
+    await userData.save();
     return res
       .status(201)
       .json({ message: "성공", success: true, video: videoData });
   } catch (error) {
-    console.error(error);
+    console.error("업로드 실패:", error);
     return res
       .status(500)
       .json({ message: "업로드에 실패했습니다.", success: false });

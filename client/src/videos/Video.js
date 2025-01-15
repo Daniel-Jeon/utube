@@ -92,6 +92,7 @@ const Video = () => {
           }
         );
         const json = await response.json();
+        console.log(json.commentData);
         setVideoComments(json.commentsData);
       } catch (error) {
         console.error(error);

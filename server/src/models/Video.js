@@ -3,6 +3,7 @@ import User from "./User.js";
 
 const videoSchema = new mongoose.Schema({
   filepath: { type: String, required: true, trim: true },
+  thumbnail: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, required: true, trim: true },
   hashtags: [{ type: String, trim: true }],

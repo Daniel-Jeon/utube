@@ -22,7 +22,7 @@ const videoRouter = express.Router();
 videoRouter.post(
   "/upload",
   privateMiddleware,
-  uploadVideoMiddleware.single("video"),
+  uploadVideoMiddleware,
   postUpload
 );
 videoRouter.get("/:id([0-9a-f]{24})", getVideoData);

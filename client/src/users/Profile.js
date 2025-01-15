@@ -6,38 +6,61 @@ const VideoList = ({ videos }) => {
   const formateDate = (createdAt) => {
     const date = new Date(createdAt);
     return date.toLocaleDateString("ko-KR", {
-      year: "numeric",
+      year: "2-digit",
       month: "long",
       day: "numeric",
-      weekday: "long",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   };
   return (
     <>
       {videos.map((video) => (
-        <ul key={video._id}>
-          <div className="border border-gray-300 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-            <h3 className="text-xl font-semibold">
-              <Link to={`/video/${video._id}`} state={{ video }}>
-                {video.title}
+        <div key={video._id} className="border rounded-lg p-2">
+          {/* 썸네일 */}
+          <div className="w-full h-40 bg-gray-200 rounded-md flex items-center justify-center mb-2 overflow-hidden">
+            <Link to={`/video/${video._id}`} state={{ video }}>
+              {video.thumbnail ? (
+                <img
+                  src={video.thumbnail} // 썸네일 이미지 URL
+                  alt={`${video.title} 썸네일`}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span>썸네일 없음</span>
+              )}
+            </Link>
+          </div>
+          {/* 텍스트 정보 */}
+          <div className="flex">
+            {/* 작성자 정보 */}
+            <div className="mr-2 mt-2 w-10 h-10">
+              <Link to={`/user/${video.owner._id}`}>
+                <img
+                  src={
+                    video.owner.avatar ? video.owner.avatar : "/default.webp"
+                  }
+                  alt="Avatar"
+                  className="rounded-full"
+                />
               </Link>
-            </h3>
-            <p className="text-gray-600">{video.description}</p>
-            <li>{video.hashtags + ""}</li>
-            <li>{formateDate(video.createdAt)}</li>
-            <div className="flex">
-              <img
-                src={video.owner.avatar ? video.owner.avatar : "/default.webp"}
-                alt=""
-                className="w-16 h-16 rounded-full border border-gray-300 mr-4"
-              />
-              <p className="self-end">{video.owner.nickname}</p>
+            </div>
+            {/* 영상 정보 */}
+            <div className="w-10/12">
+              <h3 className="text-lg font-bold line-clamp-2">
+                <Link to={`/video/${video._id}`} state={{ video }}>
+                  {video.title}
+                </Link>
+              </h3>
+              <p className="text-sm">
+                <Link to={`/user/${video.owner._id}`}>
+                  {video.owner.nickname}
+                </Link>
+              </p>
+              <p className="text-sm">
+                조회수 {video.meta.views} / {formateDate(video.createdAt)}
+              </p>
             </div>
           </div>
-          <br />
-        </ul>
+        </div>
       ))}
     </>
   );
@@ -83,12 +106,14 @@ const Profile = () => {
           </h1>
         )}
       </div>
-      <div className="grid grid-cols-4 gap-4">
-        {videos.length > 0 ? (
-          <VideoList videos={videos} />
-        ) : (
-          <span>영상이 없습니다.</span>
-        )}
+      <div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {videos.length > 0 ? (
+            <VideoList videos={videos} />
+          ) : (
+            <span>영상이 없습니다.</span>
+          )}
+        </div>
       </div>
     </div>
   );
