@@ -245,12 +245,11 @@ const Video = () => {
   return (
     <>
       {videoData && (
-        <div className="w-full bg-white shadow-md rounded-lg py-4">
-          <div className="flex justify-center mb-4">
+        <div className="mt-4">
+          <div className="flex justify-center items-center mb-4">
             <video
-              className="rounded-md border border-gray-300"
+              className="w-10/12 object-contain"
               controls
-              width="50%"
               ref={videoRef}
               onTimeUpdate={handleTimeUpdate}
               onPlay={handleOnPlay}
@@ -258,9 +257,9 @@ const Video = () => {
               onEnded={handleMetaViews}
               autoPlay
               muted
-            >
-              <source src={videoData.filepath}></source>
-            </video>
+              src={videoData.filepath}
+              style={{ maxHeight: "540px" }}
+            ></video>
           </div>
           {/*여기서 2분할*/}
           <div className="flex">
@@ -269,30 +268,31 @@ const Video = () => {
               <h1 className="text-2xl font-bold mb-4">{videoData.title}</h1>
               <p className="text-gray-700 mb-4">{videoData.description}</p>
               <p className="text-blue-500 text-sm mb-4">{videoData.hashtags}</p>
-              <div className="flex">
-                <img
-                  src={
-                    videoData.owner.avatar
-                      ? videoData.owner.avatar
-                      : "/default.webp"
-                  }
-                  alt=""
-                  className="w-20 h-20 rounded-full border border-gray-300 mr-4"
-                />
-                <p className="text-gray-600 text-sm mb-4 self-end">
-                  {videoData.owner.nickname}
-                </p>
-              </div>
+              <Link to={`/user/${videoData.owner._id}`}>
+                <div className="flex">
+                  <img
+                    src={
+                      videoData.owner.avatar
+                        ? videoData.owner.avatar
+                        : "/default.webp"
+                    }
+                    alt=""
+                    className="w-20 h-20 rounded-full border border-gray-300 mr-4"
+                  />
+                  <p className="text-gray-600 text-sm mb-4 self-end">
+                    {videoData.owner.nickname}
+                  </p>
+                </div>
+              </Link>
             </div>
             {/*우측에 메타테이터 및 버튼*/}
             <div className="flex flex-1 flex-col items-end justify-center pr-16">
               {/*메타데이터*/}
-              <div className="flex-1 flex flex-col items-center justify-center pr-8">
+              <div className="flex-1 flex flex-col items-start justify-center pr-8">
                 <p className="text-2xl" onClick={handleMetaLikes}>
                   <Link>👍 : {metaLikes}</Link>
                 </p>
-                <br />
-                <p className="text-2xl">시청수 : {metaViews}</p>
+                <p className="text-2xl">Views : {metaViews}</p>
               </div>
               {owner && (
                 <div className="flex-1 flex items-center">
@@ -339,21 +339,25 @@ const Video = () => {
               </div>
             </form>
           )}
-          <div className="px-20">
+          <div className="mb-4 px-20">
             총 댓글({videoComments.length})
             {videoComments.map((comment) => (
               <div className="mt-4 flex" key={comment._id}>
-                <img
-                  className="mr-2 w-12 h-12"
-                  src={
-                    comment.owner.avatar
-                      ? comment.owner.avatar
-                      : "/default.webp"
-                  }
-                  alt=""
-                />
-                <div className="w-11/12 mr-5">
-                  <p className="text-gray-400">@{comment.owner.nickname}</p>
+                <Link to={`/user/${comment.owner._id}`}>
+                  <img
+                    className="mr-2 w-12 h-12 rounded-full"
+                    src={
+                      comment.owner.avatar
+                        ? comment.owner.avatar
+                        : "/default.webp"
+                    }
+                    alt=""
+                  />
+                </Link>
+                <div className="w-11/12 mr-5 mb-2">
+                  <Link to={`/user/${comment.owner._id}`}>
+                    <p className="text-gray-400">@{comment.owner.nickname}</p>
+                  </Link>
                   <p>{comment.text}</p>
                 </div>
                 {(String(user?.id) === String(comment.owner._id) || owner) && (

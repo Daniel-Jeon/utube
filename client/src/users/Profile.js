@@ -14,7 +14,7 @@ const VideoList = ({ videos }) => {
   return (
     <>
       {videos.map((video) => (
-        <div key={video._id} className="border rounded-lg p-2">
+        <div key={video._id} className="p-2">
           {/* 썸네일 */}
           <div className="w-full h-40 bg-gray-200 rounded-md flex items-center justify-center mb-2 overflow-hidden">
             <Link to={`/video/${video._id}`} state={{ video }}>
@@ -88,18 +88,19 @@ const Profile = () => {
     };
     fetchUserVideos();
   }, [params]);
-  console.log(profileData);
   return (
     <div className="p-8">
-      <div className="flex justify-between">
-        <h1 className="text-3xl font-bold mb-6">
+      <div className="flex justify-between mb-4">
+        <div className="flex flex-row">
           <img
             src={profileData.avatar ? profileData.avatar : "/default.webp"}
             alt=""
             className="w-20 h-20 rounded-full border border-gray-300 mr-4"
           />
-          {profileData.nickname} 프로필
-        </h1>
+          <h1 className="text-3xl font-bold flex items-end h-20">
+            {profileData.nickname} 프로필
+          </h1>
+        </div>
         {user && user.id === profileData._id && (
           <h1>
             <Link to={`/user/${params}/edit`}>프로필 수정</Link>

@@ -31,7 +31,7 @@ const Header = () => {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!search || search === "") {
+    if (!search || search === "" || !search.trim()) {
       alert("검색어를 입력하세요.");
       searchBar.current.focus();
       return;

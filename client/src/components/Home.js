@@ -13,7 +13,7 @@ const VideoList = ({ videos }) => {
   return (
     <>
       {videos.map((video) => (
-        <div key={video._id} className="border rounded-lg p-2">
+        <div key={video._id} className="p-2">
           {/* 썸네일 */}
           <div className="w-full h-40 bg-gray-200 rounded-md flex items-center justify-center mb-2 overflow-hidden">
             <Link to={`/video/${video._id}`} state={{ video }}>
