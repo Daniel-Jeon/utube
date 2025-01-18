@@ -15,7 +15,7 @@ import Search from "./videos/Search";
 
 const App = () => {
   const { user } = useContext(UserContext);
-  console.log("API URL :", process.env.REACT_APP_API_URL);
+  //console.log("API URL :", process.env.REACT_APP_API_URL);
   return (
     <BrowserRouter>
       <div className="flex flex-col min-h-screen">
