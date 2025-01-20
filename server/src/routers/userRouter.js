@@ -20,6 +20,7 @@ userRouter.get("/:id([0-9a-f]{24})/videos", getUserVideos);
 userRouter.post(
   "/:id([0-9a-f]{24})/edit",
   uploadImageMiddleware.single("avatar"),
+  privateMiddleware,
   postEditUser
 );
 

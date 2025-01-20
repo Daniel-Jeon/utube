@@ -48,7 +48,6 @@ const Upload = () => {
         }
       );
       const json = await response.json();
-      console.log(json);
       alert(json.message);
       if (!json.success) return;
       navigate("/video/" + json.video._id, { state: { video: json.video } });

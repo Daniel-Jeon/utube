@@ -27,8 +27,8 @@ videoRouter.post(
 );
 videoRouter.get("/:id([0-9a-f]{24})", getVideoData);
 videoRouter.post("/:id([0-9a-f]{24})", postConfirmOwner);
-videoRouter.delete("/:id([0-9a-f]{24})/delete", deleteVideo);
-videoRouter.post("/:id([0-9a-f]{24})/edit", postEditVideo);
+videoRouter.delete("/:id([0-9a-f]{24})/delete", privateMiddleware, deleteVideo);
+videoRouter.post("/:id([0-9a-f]{24})/edit", privateMiddleware, postEditVideo);
 videoRouter.post("/:id([0-9a-f]{24})/meta", postEditVideoMeta);
 videoRouter.post("/:id([0-9a-f]{24})/comment", postVideoComment);
 videoRouter.get("/:id([0-9a-f]{24})/comments", getComments);
